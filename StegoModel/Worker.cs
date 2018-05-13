@@ -7,6 +7,7 @@ namespace StegoModel
     {
         Bitmap Pack(Bitmap sourceImage, string text);
         string Unpack(Bitmap stegoImage);
+        bool IsCombined(Bitmap sourceImage);
     }
 
     public interface IHelperIO
