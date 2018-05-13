@@ -15,7 +15,7 @@ namespace StegoModel
 
             byte[] rez = new byte[1];
             Color color = sourceImage.GetPixel(0, 0);
-            BitArray colorArray = color.R.ToBits(); 
+            BitArray colorArray = color.R.ToBits();
             BitArray messageArray = color.R.ToBits();
             messageArray[0] = colorArray[0];
             messageArray[1] = colorArray[1];
@@ -44,7 +44,7 @@ namespace StegoModel
         public Bitmap Pack(Bitmap sourceImage, List<byte> text)
         {
             // в CountText - размер прятываемого текста в байтах
-            int sizeText = text.Count; 
+            int sizeText = text.Count;
 
             //проверяем, поместиться ли исходный текст в картинке
             if (sizeText > ((sourceImage.Width * sourceImage.Height)) - 4)
@@ -135,13 +135,58 @@ namespace StegoModel
 
         List<byte> IWorker.Unpack(Bitmap stegoImage)
         {
-            throw new NotImplementedException();
+            if (IsCombined(stegoImage) == false)
+            {
+                //TODO: выкидывать исключение
+                return null;
+            }
+
+            //считали количество скрытых символов
+            int nSymbols = ReadCountText(stegoImage);
+            var message = new List<byte>(nSymbols);
+            int index = 0;
+            bool st = false;
+
+            for (int i = 4; i < stegoImage.Width; i++)
+            {
+                for (int j = 0; j < stegoImage.Height; j++)
+                {
+                    Color pixelColor = stegoImage.GetPixel(i, j);
+                    if (index == message.Count)
+                    {
+                        st = true;
+                        break;
+                    }
+                    BitArray colorArray = pixelColor.R.ToBits();
+                    BitArray messageArray = pixelColor.R.ToBits(); ;
+                    messageArray[0] = colorArray[0];
+                    messageArray[1] = colorArray[1];
+
+                    colorArray = pixelColor.G.ToBits();
+                    messageArray[2] = colorArray[0];
+                    messageArray[3] = colorArray[1];
+                    messageArray[4] = colorArray[2];
+
+                    colorArray = pixelColor.B.ToBits();
+                    messageArray[5] = colorArray[0];
+                    messageArray[6] = colorArray[1];
+                    messageArray[7] = colorArray[2];
+                    message[index] = messageArray.ToByte();
+                    index++;
+                }
+                if (st)
+                {
+                    break;
+                }
+            }
+
+            return message;
         }
 
         private int ReadCountText(Bitmap src)
         {
             //массив на 3 элемента, т.е. максимум 999 символов шифруется
-            byte[] rez = new byte[3]; 
+            byte[] rez = new byte[3];
 
             for (int i = 0; i < 3; i++)
             {
@@ -177,7 +222,7 @@ namespace StegoModel
             for (int i = 0; i < 3; i++)
             {
                 //биты количества символов
-                BitArray bitCount = countSymbols[i].ToBits(); 
+                BitArray bitCount = countSymbols[i].ToBits();
                 //1, 2, 3 пикселы
                 Color pColor = src.GetPixel(0, i + 1);
                 //бит цветов текущего пикселя
