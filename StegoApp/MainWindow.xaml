@@ -8,27 +8,37 @@
         Title="MainWindow" Height="220" Width="220"
         SizeToContent="Height"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="CanMinimize">
+        ResizeMode="CanMinimize"
+        Loaded="Window_Loaded">
+    <Window.Resources>
+        <local:PackerViewModel x:Key="Packer" />
+    </Window.Resources>
     <Grid>
         <TabControl>
-            <TabItem Header="Упаковка">
+            <TabItem Header="Упаковка" DataContext="{StaticResource Packer}">
                 <StackPanel HorizontalAlignment="Center">
                     <Label>Пустой контейнер:</Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="False" Width="170">Путь до пустого контейнера:</TextBox>
-                        <Button>...</Button>
+                        <TextBox IsEnabled="False" Width="170" 
+                                 Text="{Binding Path=PathSourceImage}"
+                                 ToolTip="Путь до пустого контейнера"/>
+                        <Button Click="Button_Click">...</Button>
                     </StackPanel>
 
                     <Label>Скрываемый текст:</Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="False" Width="170">Путь до скрываемого текста:</TextBox>
-                        <Button>...</Button>
+                        <TextBox IsEnabled="False" Width="170"
+                                 Text="{Binding Path=PathHidingText}"
+                                 ToolTip="Путь до скрываемого текста"/>
+                        <Button Click="Button_Click_1">...</Button>
                     </StackPanel>
 
                     <Label>Стегоконтейнер:</Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="False" Width="170">Путь сохранения контейнера:</TextBox>
-                        <Button>...</Button>
+                        <TextBox IsEnabled="False" Width="170"
+                                 Text="{Binding Path=PathStegoContainer}"
+                                 ToolTip="Путь сохранения стегоконтейнера"/>
+                        <Button Click="Button_Click_2">...</Button>
                     </StackPanel>
 
                     <Button HorizontalAlignment="Center" Margin="5, 5">Упаковать</Button>

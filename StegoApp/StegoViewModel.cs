@@ -47,6 +47,7 @@ namespace StegoApp
             set
             {
                 _pathImage = value;
+                OnPropertyChanged(nameof(PathSourceImage));
             }
         }
 
@@ -59,6 +60,7 @@ namespace StegoApp
             set
             {
                 _pathHidingText = value;
+                OnPropertyChanged(nameof(PathHidingText));
             }
         }
 
@@ -71,6 +73,7 @@ namespace StegoApp
             set
             {
                 _pathStegoContainer = value;
+                OnPropertyChanged(nameof(PathStegoContainer));
             }
         }
 
