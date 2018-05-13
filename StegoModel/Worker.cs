@@ -16,6 +16,6 @@ namespace StegoModel
         Bitmap ReadImage(string path);
         void WriteImage(string path, Bitmap image);
         List<byte> ReadText(string path);
-        void WriteImage(string path, List<byte> text);
+        void WriteText(string path, List<byte> text);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,22 +44,47 @@ namespace StegoModel
     {
         public Bitmap ReadImage(string path)
         {
-            throw new NotImplementedException();
+            var file = new FileStream(path, FileMode.Open);
+            var bmp = new Bitmap(file);
+            file.Close();
+
+            return bmp;
         }
 
         public List<byte> ReadText(string path)
         {
-            throw new NotImplementedException();
+            var file = new FileStream(path, FileMode.Open);
+            var reader = new BinaryReader(file, Encoding.ASCII);
+            var text = new List<byte>();
+
+            while (reader.PeekChar() != -1)
+            {
+                text.Add(reader.ReadByte());
+            }
+
+            reader.Close();
+            file.Close();
+
+            return text;
         }
 
         public void WriteImage(string path, Bitmap image)
         {
-            throw new NotImplementedException();
+            image.Save(path, System.Drawing.Imaging.ImageFormat.Bmp);
         }
 
-        public void WriteImage(string path, List<byte> text)
+        public void WriteText(string path, List<byte> text)
         {
-            throw new NotImplementedException();
+            using (var file = new FileStream(path, FileMode.Create))
+            {
+                using (var writer = new StreamWriter(
+                    file, Encoding.Default))
+                {
+                    var t = Encoding.GetEncoding(1251)
+                        .GetString(text.ToArray());
+                    writer.Write(t);
+                }
+            }      
         }
     }
 }
