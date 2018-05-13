@@ -136,17 +136,21 @@ namespace StegoApp
 
         private void Button_Click_6(object sender, RoutedEventArgs e)
         {
+            var msg = "Текст успешно получен и записан в файл.";
+            var msgBoxImage = MessageBoxImage.Information;
+
             try
             {
                 _unpacker.Unpack();
             }
             catch (Exception ex)
             {
-                var msg = ex.Message;
-
-                MessageBox.Show($"{msg}", Title,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                msg = ex.Message;
+                msgBoxImage = MessageBoxImage.Error;
             }
+
+            MessageBox.Show($"{msg}", Title,
+                MessageBoxButton.OK, msgBoxImage);
         }
     }
 }
