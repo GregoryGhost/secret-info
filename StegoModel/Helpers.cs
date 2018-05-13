@@ -44,9 +44,7 @@ namespace StegoModel
     {
         public Bitmap ReadImage(string path)
         {
-            var file = new FileStream(path, FileMode.Open);
-            var bmp = new Bitmap(file);
-            file.Close();
+            var bmp = (Bitmap)Image.FromFile(path);
 
             return bmp;
         }
@@ -75,16 +73,16 @@ namespace StegoModel
 
         public void WriteText(string path, List<byte> text)
         {
+            var t = Encoding.GetEncoding(1251).GetString(text.ToArray());
+
             using (var file = new FileStream(path, FileMode.Create))
             {
                 using (var writer = new StreamWriter(
                     file, Encoding.Default))
                 {
-                    var t = Encoding.GetEncoding(1251)
-                        .GetString(text.ToArray());
                     writer.Write(t);
                 }
-            }      
+            }
         }
     }
 }

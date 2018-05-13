@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 
 namespace StegoModel
@@ -144,7 +145,7 @@ namespace StegoModel
 
             //считали количество скрытых символов
             int nSymbols = ReadCountText(stegoImage);
-            var message = new List<byte>(nSymbols);
+            var message = new byte[nSymbols];
             int index = 0;
             bool st = false;
 
@@ -153,7 +154,7 @@ namespace StegoModel
                 for (int j = 0; j < stegoImage.Height; j++)
                 {
                     Color pixelColor = stegoImage.GetPixel(i, j);
-                    if (index == message.Count)
+                    if (index == message.Length)
                     {
                         st = true;
                         break;
@@ -180,8 +181,9 @@ namespace StegoModel
                     break;
                 }
             }
-
-            return message;
+            //медленно работает преобразование byte[] в
+            //  List<byte>
+            return message.OfType<byte>().ToList();
         }
 
         private int ReadCountText(Bitmap src)
