@@ -49,5 +49,37 @@ namespace StegoModel
         {
             throw new NotImplementedException();
         }
+
+        private int ReadCountText(Bitmap src)
+        {
+            //массив на 3 элемента, т.е. максимум 999 символов шифруется
+            byte[] rez = new byte[3]; 
+
+            for (int i = 0; i < 3; i++)
+            {
+                //цвет 1, 2, 3 пикселей 
+                Color color = src.GetPixel(0, i + 1);
+                //биты цвета
+                BitArray colorArray = color.R.ToBits();
+                //инициализация результирующего массива бит
+                BitArray bitCount = color.R.ToBits();
+                bitCount[0] = colorArray[0];
+                bitCount[1] = colorArray[1];
+
+                colorArray = color.G.ToBits();
+                bitCount[2] = colorArray[0];
+                bitCount[3] = colorArray[1];
+                bitCount[4] = colorArray[2];
+
+                colorArray = color.B.ToBits();
+                bitCount[5] = colorArray[0];
+                bitCount[6] = colorArray[1];
+                bitCount[7] = colorArray[2];
+                rez[i] = bitCount.ToByte();
+            }
+            string m = Encoding.GetEncoding(1251).GetString(rez);
+
+            return Convert.ToInt32(m, 10);
+        }
     }
 }
