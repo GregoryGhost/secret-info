@@ -138,8 +138,8 @@ namespace StegoModel
         {
             if (IsCombined(stegoImage) == false)
             {
-                //TODO: выкидывать исключение
-                return null;
+                var msg = $"Стегоконтейнер является пустым контейнером.";
+                throw new ArgumentException(msg, nameof(stegoImage));
             }
 
             //считали количество скрытых символов
