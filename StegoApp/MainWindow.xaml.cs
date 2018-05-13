@@ -28,6 +28,12 @@ namespace StegoApp
             InitializeComponent();
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            _packer = this.TryFindResource("Packer")
+                as PackerViewModel;
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             string pathSrcImg = String.Empty;
@@ -76,10 +82,19 @@ namespace StegoApp
             _packer.PathStegoContainer = pathStegoContainer;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            _packer = this.TryFindResource("Packer")
-                as PackerViewModel;
+            try
+            {
+                _packer.Pack();
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+
+                MessageBox.Show($"{ex}", "MainWindow",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

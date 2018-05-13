@@ -41,7 +41,8 @@
                         <Button Click="Button_Click_2">...</Button>
                     </StackPanel>
 
-                    <Button HorizontalAlignment="Center" Margin="5, 5">Упаковать</Button>
+                    <Button HorizontalAlignment="Center" Margin="5, 5"
+                            Click="Button_Click_3">Упаковать</Button>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Извлечение">
