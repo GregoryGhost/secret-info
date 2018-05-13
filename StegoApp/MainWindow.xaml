@@ -1,0 +1,56 @@
+﻿<Window x:Class="StegoApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StegoApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="220" Width="220"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanMinimize">
+    <Grid>
+        <TabControl>
+            <TabItem Header="Упаковка">
+                <StackPanel HorizontalAlignment="Center">
+                    <Label>Пустой контейнер:</Label>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox IsEnabled="False">Путь до пустого контейнера:</TextBox>
+                        <Button>...</Button>
+                    </StackPanel>
+
+                    <Label>Скрываемый текст:</Label>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox IsEnabled="False">Путь до скрываемого текста:</TextBox>
+                        <Button>...</Button>
+                    </StackPanel>
+
+                    <Label>Стегоконтейнер:</Label>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox IsEnabled="False">Путь сохранения контейнера:</TextBox>
+                        <Button>...</Button>
+                    </StackPanel>
+
+                    <Button HorizontalAlignment="Center" Margin="5, 5">Упаковать</Button>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Извлечение">
+                <StackPanel HorizontalAlignment="Center">
+                    <Label>Стегоконтейнер:</Label>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox IsEnabled="False">Путь до стегоконтейнера:</TextBox>
+                        <Button>...</Button>
+                    </StackPanel>
+
+                    <Label>Получаемый текст:</Label>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox IsEnabled="False">Путь сохранения текста:</TextBox>
+                        <Button>...</Button>
+                    </StackPanel>
+
+                    <Button HorizontalAlignment="Center" Margin="5, 5">Извлечь</Button>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
