@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 
@@ -40,12 +41,99 @@ namespace StegoModel
             return result;
         }
 
-        public Bitmap Pack(Bitmap sourceImage, string text)
+        public Bitmap Pack(Bitmap sourceImage, List<byte> text)
         {
-            throw new NotImplementedException();
+            // в CountText - размер прятываемого текста в байтах
+            int sizeText = text.Count; 
+
+            //проверяем, поместиться ли исходный текст в картинке
+            if (sizeText > ((sourceImage.Width * sourceImage.Height)) - 4)
+            {
+                //TODO: выкидывать исключение
+                return null;
+            }
+
+            //проверяем, может быть картинка уже зашифрована
+            if (this.IsCombined(sourceImage))
+            {
+                //TODO: выкидывать исключение
+                return null;
+            }
+
+            var symbols = Encoding.GetEncoding(1251).GetBytes("/");
+            var beginSymbols = symbols[0].ToBits();
+            var curColor = sourceImage.GetPixel(0, 0);
+            var temp = curColor.R.ToBits();
+            temp[0] = beginSymbols[0];
+            temp[1] = beginSymbols[1];
+            byte nR = temp.ToByte();
+
+            temp = curColor.G.ToBits();
+            temp[0] = beginSymbols[2];
+            temp[1] = beginSymbols[3];
+            temp[2] = beginSymbols[4];
+            byte nG = temp.ToByte();
+
+            temp = curColor.B.ToBits();
+            temp[0] = beginSymbols[5];
+            temp[1] = beginSymbols[6];
+            temp[2] = beginSymbols[7];
+            var nB = temp.ToByte();
+
+            var nColor = Color.FromArgb(nR, nG, nB);
+            Bitmap stegoImage = sourceImage;
+            //в первом пикселе будет маркер, 
+            //  который говорит о том, что картика зашифрована
+            stegoImage.SetPixel(0, 0, nColor);
+
+            //записываем количество символов для шифрования
+            WriteCountText(sizeText, stegoImage);
+
+            int index = 0;
+            bool st = false;
+            for (int i = 4; i < stegoImage.Width; i++)
+            {
+                for (int j = 0; j < stegoImage.Height; j++)
+                {
+                    var pixelColor = stegoImage.GetPixel(i, j);
+                    if (index == text.Count)
+                    {
+                        st = true;
+                        break;
+                    }
+                    BitArray colorArray = pixelColor.R.ToBits();
+                    BitArray messageArray = (text[index]).ToBits();
+                    //меняем в нашем цвете биты
+                    colorArray[0] = messageArray[0];
+                    colorArray[1] = messageArray[1];
+                    byte newR = colorArray.ToByte();
+
+                    colorArray = pixelColor.G.ToBits();
+                    colorArray[0] = messageArray[2];
+                    colorArray[1] = messageArray[3];
+                    colorArray[2] = messageArray[4];
+                    byte newG = colorArray.ToByte();
+
+                    colorArray = pixelColor.B.ToBits();
+                    colorArray[0] = messageArray[5];
+                    colorArray[1] = messageArray[6];
+                    colorArray[2] = messageArray[7];
+                    byte newB = colorArray.ToByte();
+
+                    Color newColor = Color.FromArgb(newR, newG, newB);
+                    sourceImage.SetPixel(i, j, newColor);
+                    index++;
+                }
+                if (st)
+                {
+                    break;
+                }
+            }
+
+            return stegoImage;
         }
 
-        public string Unpack(Bitmap stegoImage)
+        List<byte> IWorker.Unpack(Bitmap stegoImage)
         {
             throw new NotImplementedException();
         }

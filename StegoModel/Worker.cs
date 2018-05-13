@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace StegoModel
 {
     public interface IWorker
     {
-        Bitmap Pack(Bitmap sourceImage, string text);
-        string Unpack(Bitmap stegoImage);
+        Bitmap Pack(Bitmap sourceImage, List<byte> text);
+        List<byte> Unpack(Bitmap stegoImage);
         bool IsCombined(Bitmap sourceImage);
     }
 
