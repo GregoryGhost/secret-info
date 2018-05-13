@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StegoApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="220" Width="220"
+        Title="Стеганография" Height="220" Width="220"
         SizeToContent="Height"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="CanMinimize"
+        ResizeMode="NoResize"
         Loaded="Window_Loaded">
     <Window.Resources>
         <local:PackerViewModel x:Key="Packer" />

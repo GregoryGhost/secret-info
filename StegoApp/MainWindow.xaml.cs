@@ -95,7 +95,7 @@ namespace StegoApp
             {
                 var msg = ex.Message;
 
-                MessageBox.Show($"{ex}", "MainWindow",
+                MessageBox.Show($"{ex}", Title,
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -144,7 +144,7 @@ namespace StegoApp
             {
                 var msg = ex.Message;
 
-                MessageBox.Show($"{ex}", "MainWindow",
+                MessageBox.Show($"{ex}", Title,
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
