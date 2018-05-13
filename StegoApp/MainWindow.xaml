@@ -15,19 +15,19 @@
                 <StackPanel HorizontalAlignment="Center">
                     <Label>Пустой контейнер:</Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="False">Путь до пустого контейнера:</TextBox>
+                        <TextBox IsEnabled="False" Width="170">Путь до пустого контейнера:</TextBox>
                         <Button>...</Button>
                     </StackPanel>
 
                     <Label>Скрываемый текст:</Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="False">Путь до скрываемого текста:</TextBox>
+                        <TextBox IsEnabled="False" Width="170">Путь до скрываемого текста:</TextBox>
                         <Button>...</Button>
                     </StackPanel>
 
                     <Label>Стегоконтейнер:</Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="False">Путь сохранения контейнера:</TextBox>
+                        <TextBox IsEnabled="False" Width="170">Путь сохранения контейнера:</TextBox>
                         <Button>...</Button>
                     </StackPanel>
 
@@ -38,13 +38,13 @@
                 <StackPanel HorizontalAlignment="Center">
                     <Label>Стегоконтейнер:</Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="False">Путь до стегоконтейнера:</TextBox>
+                        <TextBox IsEnabled="False" Width="170">Путь до стегоконтейнера:</TextBox>
                         <Button>...</Button>
                     </StackPanel>
 
                     <Label>Получаемый текст:</Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="False">Путь сохранения текста:</TextBox>
+                        <TextBox IsEnabled="False" Width="170">Путь сохранения текста:</TextBox>
                         <Button>...</Button>
                     </StackPanel>
 
