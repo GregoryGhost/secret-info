@@ -47,17 +47,18 @@ namespace StegoModel
             int sizeText = text.Count;
 
             //проверяем, поместиться ли исходный текст в картинке
-            if (sizeText > ((sourceImage.Width * sourceImage.Height)) - 4)
+            if (sizeText > ((sourceImage.Width * sourceImage.Height) - 4))
             {
-                //TODO: выкидывать исключение
-                return null;
+                var msg = $"Размер скрываемого текста" +
+                    $" больше размера пустого контейнера.";
+                throw new ArgumentException(msg, nameof(text));
             }
 
             //проверяем, может быть картинка уже зашифрована
             if (this.IsCombined(sourceImage))
             {
-                //TODO: выкидывать исключение
-                return null;
+                var msg = $"Пустой контейнер является стегоконтейнером.";
+                throw new ArgumentException(msg, nameof(sourceImage));
             }
 
             var symbols = Encoding.GetEncoding(1251).GetBytes("/");
