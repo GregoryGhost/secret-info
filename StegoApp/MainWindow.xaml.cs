@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ namespace StegoApp
     {
         private PackerViewModel _packer;
         private UnpackerViewModel _unpacker;
+        private VisualAttackViewModel _visualAttack;
 
         public MainWindow()
         {
@@ -35,6 +37,8 @@ namespace StegoApp
                 as PackerViewModel;
             _unpacker = this.TryFindResource("Unpacker")
                 as UnpackerViewModel;
+            _visualAttack = this.TryFindResource("VisualAttack")
+                as VisualAttackViewModel;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -155,6 +159,81 @@ namespace StegoApp
 
             MessageBox.Show($"{msg}", Title,
                 MessageBoxButton.OK, msgBoxImage);
+        }
+
+        private void Button_Click_7(object sender, RoutedEventArgs e)
+        {
+            string pathEmptyContainer = String.Empty;
+
+            var dSavePic = new OpenFileDialog();
+            dSavePic.Filter = "Файлы изображений " +
+                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*";
+
+            if (dSavePic.ShowDialog() == true)
+            {
+                pathEmptyContainer = dSavePic.FileName;
+            }
+
+            _visualAttack.PathEmptyContainer = pathEmptyContainer;
+        }
+
+        private void Button_Click_8(object sender, RoutedEventArgs e)
+        {
+            string pathStegoContainer = String.Empty;
+
+            var dSavePic = new OpenFileDialog();
+            dSavePic.Filter = "Файлы изображений " +
+                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*";
+
+            if (dSavePic.ShowDialog() == true)
+            {
+                pathStegoContainer = dSavePic.FileName;
+            }
+
+            _visualAttack.PathStegoContainer = pathStegoContainer;
+        }
+
+        private void Button_Click_9(object sender, RoutedEventArgs e)
+        {
+            var msg = "Сравнение успешно произведено.";
+            var msgBoxImage = MessageBoxImage.Information;
+            Bitmap diff = null;
+
+            try
+            {
+                diff = _visualAttack.DifferenceEmptyAndStegoContainers();
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                msgBoxImage = MessageBoxImage.Error;
+            }
+
+            MessageBox.Show($"{msg}", Title,
+                MessageBoxButton.OK, msgBoxImage);
+
+            var resultWindow = new ShowingDiffContainers();
+            resultWindow.DiffImage.Source = diff.ToImageSource();
+            resultWindow.ShowDialog();
+        }
+    }
+
+    public static class BitmapExtension
+    {
+        public static BitmapImage ToImageSource(this Bitmap bitmap)
+        {
+            using (var memory = new System.IO.MemoryStream())
+            {
+                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
+                memory.Position = 0;
+                var bitmapImg = new BitmapImage();
+                bitmapImg.BeginInit();
+                bitmapImg.StreamSource = memory;
+                bitmapImg.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImg.EndInit();
+
+                return bitmapImg;
+            }
         }
     }
 }

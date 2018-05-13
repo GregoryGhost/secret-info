@@ -13,10 +13,12 @@
     <Window.Resources>
         <local:PackerViewModel x:Key="Packer" />
         <local:UnpackerViewModel x:Key="Unpacker" />
+        <local:VisualAttackViewModel x:Key="VisualAttack" />
     </Window.Resources>
     <Grid>
         <TabControl>
-            <TabItem Header="Упаковка" DataContext="{StaticResource Packer}">
+            <TabItem Header="Упаковка" 
+                     DataContext="{StaticResource Packer}">
                 <StackPanel HorizontalAlignment="Center">
                     <Label>Пустой контейнер:</Label>
                     <StackPanel Orientation="Horizontal">
@@ -46,7 +48,8 @@
                             Click="Button_Click_3">Упаковать</Button>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Извлечение" DataContext="{StaticResource Unpacker}">
+            <TabItem Header="Извлечение" 
+                     DataContext="{StaticResource Unpacker}">
                 <StackPanel HorizontalAlignment="Center">
                     <Label>Стегоконтейнер:</Label>
                     <StackPanel Orientation="Horizontal">
@@ -66,6 +69,29 @@
 
                     <Button HorizontalAlignment="Center" Margin="5, 5"
                             Click="Button_Click_6">Извлечь</Button>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Сравнение" 
+                     DataContext="{StaticResource VisualAttack}">
+                <StackPanel HorizontalAlignment="Center">
+                    <Label>Пустой контейнер:</Label>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox IsEnabled="False" Width="170"
+                                 Text="{Binding Path=PathEmptyContainer}"
+                                 ToolTip="Путь до пустого контейнера"/>
+                        <Button Click="Button_Click_7">...</Button>
+                    </StackPanel>
+
+                    <Label>Стегоконтейнер:</Label>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox IsEnabled="False" Width="170"
+                                 Text="{Binding Path=PathStegoContainer}"
+                                 ToolTip="Путь до стегоконтейнера"/>
+                        <Button Click="Button_Click_8">...</Button>
+                    </StackPanel>
+
+                    <Button HorizontalAlignment="Center" Margin="5, 5"
+                            Click="Button_Click_9">Сравнить</Button>
                 </StackPanel>
             </TabItem>
         </TabControl>
