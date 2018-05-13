@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,6 +36,29 @@ namespace StegoModel
             }
 
             return num;
+        }
+    }
+
+    public class HelperIO : IHelperIO
+    {
+        public Bitmap ReadImage(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<byte> ReadText(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteImage(string path, Bitmap image)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteImage(string path, List<byte> text)
+        {
+            throw new NotImplementedException();
         }
     }
 }
