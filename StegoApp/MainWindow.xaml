@@ -12,6 +12,7 @@
         Loaded="Window_Loaded">
     <Window.Resources>
         <local:PackerViewModel x:Key="Packer" />
+        <local:UnpackerViewModel x:Key="Unpacker" />
     </Window.Resources>
     <Grid>
         <TabControl>
@@ -45,21 +46,26 @@
                             Click="Button_Click_3">Упаковать</Button>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Извлечение">
+            <TabItem Header="Извлечение" DataContext="{StaticResource Unpacker}">
                 <StackPanel HorizontalAlignment="Center">
                     <Label>Стегоконтейнер:</Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="False" Width="170">Путь до стегоконтейнера:</TextBox>
-                        <Button>...</Button>
+                        <TextBox IsEnabled="False" Width="170"
+                                 Text="{Binding Path=PathStegoContainer}"
+                                 ToolTip="Путь до стегоконтейнера"/>
+                        <Button Click="Button_Click_4">...</Button>
                     </StackPanel>
 
                     <Label>Получаемый текст:</Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="False" Width="170">Путь сохранения текста:</TextBox>
-                        <Button>...</Button>
+                        <TextBox IsEnabled="False" Width="170"
+                                 Text="{Binding Path=PathUnhidingText}"
+                                 ToolTip="Путь сохранения текста"/>
+                        <Button Click="Button_Click_5">...</Button>
                     </StackPanel>
 
-                    <Button HorizontalAlignment="Center" Margin="5, 5">Извлечь</Button>
+                    <Button HorizontalAlignment="Center" Margin="5, 5"
+                            Click="Button_Click_6">Извлечь</Button>
                 </StackPanel>
             </TabItem>
         </TabControl>

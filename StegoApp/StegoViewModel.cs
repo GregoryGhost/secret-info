@@ -90,4 +90,57 @@ namespace StegoApp
                 stegocontainer);
         }
     }
+
+
+    public class UnpackerViewModel : Notify
+    {
+        private string _pathUnhidingText = string.Empty;
+        private string _pathStegoContainer = string.Empty;
+
+        private readonly LeastSignificantBit _workerSLB;
+        private readonly HelperIO _helperIO;
+
+        public UnpackerViewModel()
+        {
+            _workerSLB = new LeastSignificantBit();
+            _helperIO = new HelperIO();
+        }
+
+        public void Unpack()
+        {
+            var stegocontainer = _helperIO.ReadImage(
+                PathStegoContainer);
+            var unhidingText = _workerSLB.Unpack(
+                stegocontainer);
+
+            _helperIO.WriteText(PathUnhidingText,
+                unhidingText);
+        }
+
+        public string PathUnhidingText
+        {
+            get
+            {
+                return _pathUnhidingText;
+            }
+            set
+            {
+                _pathUnhidingText = value;
+                OnPropertyChanged(nameof(PathUnhidingText));
+            }
+        }
+
+        public string PathStegoContainer
+        {
+            get
+            {
+                return _pathStegoContainer;
+            }
+            set
+            {
+                _pathStegoContainer = value;
+                OnPropertyChanged(nameof(PathStegoContainer));
+            }
+        }
+    }
 }

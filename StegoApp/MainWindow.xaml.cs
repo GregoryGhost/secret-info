@@ -22,6 +22,7 @@ namespace StegoApp
     public partial class MainWindow : Window
     {
         private PackerViewModel _packer;
+        private UnpackerViewModel _unpacker;
 
         public MainWindow()
         {
@@ -32,6 +33,8 @@ namespace StegoApp
         {
             _packer = this.TryFindResource("Packer")
                 as PackerViewModel;
+            _unpacker = this.TryFindResource("Unpacker")
+                as UnpackerViewModel;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -87,6 +90,55 @@ namespace StegoApp
             try
             {
                 _packer.Pack();
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+
+                MessageBox.Show($"{ex}", "MainWindow",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            string pathStegoContainer = String.Empty;
+
+            var dSavePic = new OpenFileDialog();
+            dSavePic.Filter = "Файлы изображений " +
+                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*";
+
+            if (dSavePic.ShowDialog() == true)
+            {
+                pathStegoContainer = dSavePic.FileName;
+            }
+
+            _unpacker.PathStegoContainer = pathStegoContainer;
+        }
+
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            string pathUnhidingText = String.Empty;
+
+            var dText = new SaveFileDialog
+            {
+                Filter = "Текстовые файлы " +
+                "(*.txt)|*.txt|Все файлы (*.*)|*.*"
+            };
+
+            if (dText.ShowDialog() == true)
+            {
+                pathUnhidingText = dText.FileName;
+            }
+
+            _unpacker.PathUnhidingText = pathUnhidingText;
+        }
+
+        private void Button_Click_6(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _unpacker.Unpack();
             }
             catch (Exception ex)
             {

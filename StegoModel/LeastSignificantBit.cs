@@ -133,7 +133,7 @@ namespace StegoModel
             return stegoImage;
         }
 
-        List<byte> IWorker.Unpack(Bitmap stegoImage)
+        public List<byte> Unpack(Bitmap stegoImage)
         {
             if (IsCombined(stegoImage) == false)
             {
