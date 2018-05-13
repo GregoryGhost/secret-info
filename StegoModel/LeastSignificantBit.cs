@@ -81,5 +81,45 @@ namespace StegoModel
 
             return Convert.ToInt32(m, 10);
         }
+
+        private void WriteCountText(int count, Bitmap src)
+        {
+            byte[] countSymbols = Encoding.GetEncoding(1251).GetBytes(count.ToString());
+
+            for (int i = 0; i < 3; i++)
+            {
+                //биты количества символов
+                BitArray bitCount = countSymbols[i].ToBits(); 
+                //1, 2, 3 пикселы
+                Color pColor = src.GetPixel(0, i + 1);
+                //бит цветов текущего пикселя
+                BitArray bitsCurColor = pColor.R.ToBits();
+                bitsCurColor[0] = bitCount[0];
+                bitsCurColor[1] = bitCount[1];
+                //новый бит цвета пиксея
+                byte nR = bitsCurColor.ToByte();
+
+                //биты цветов текущего пикселя
+                bitsCurColor = pColor.G.ToBits();
+                bitsCurColor[0] = bitCount[2];
+                bitsCurColor[1] = bitCount[3];
+                bitsCurColor[2] = bitCount[4];
+                //новый цвет пикселя
+                byte nG = bitsCurColor.ToByte();
+
+                //биты цветов текущего пикселя
+                bitsCurColor = pColor.B.ToBits();
+                bitsCurColor[0] = bitCount[5];
+                bitsCurColor[1] = bitCount[6];
+                bitsCurColor[2] = bitCount[7];
+                //новый цвет пикселя
+                byte nB = bitsCurColor.ToByte();
+
+                //новый цвет из полученных битов
+                Color nColor = Color.FromArgb(nR, nG, nB);
+                //записали полученный цвет в картинку
+                src.SetPixel(0, i + 1, nColor);
+            }
+        }
     }
 }
