@@ -22,7 +22,7 @@
                 <StackPanel HorizontalAlignment="Center">
                     <Label>Пустой контейнер:</Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="False" Width="170" 
+                        <TextBox IsReadOnly="True" Width="170" 
                                  Text="{Binding Path=PathSourceImage}"
                                  ToolTip="Путь до пустого контейнера"/>
                         <Button Click="Button_Click">...</Button>
@@ -30,7 +30,7 @@
 
                     <Label>Скрываемый текст:</Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="False" Width="170"
+                        <TextBox IsReadOnly="True" Width="170"
                                  Text="{Binding Path=PathHidingText}"
                                  ToolTip="Путь до скрываемого текста"/>
                         <Button Click="Button_Click_1">...</Button>
@@ -38,7 +38,7 @@
 
                     <Label>Стегоконтейнер:</Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="False" Width="170"
+                        <TextBox IsReadOnly="True" Width="170"
                                  Text="{Binding Path=PathStegoContainer}"
                                  ToolTip="Путь сохранения стегоконтейнера"/>
                         <Button Click="Button_Click_2">...</Button>
@@ -53,7 +53,7 @@
                 <StackPanel HorizontalAlignment="Center">
                     <Label>Стегоконтейнер:</Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="False" Width="170"
+                        <TextBox IsReadOnly="True" Width="170"
                                  Text="{Binding Path=PathStegoContainer}"
                                  ToolTip="Путь до стегоконтейнера"/>
                         <Button Click="Button_Click_4">...</Button>
@@ -61,7 +61,7 @@
 
                     <Label>Получаемый текст:</Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="False" Width="170"
+                        <TextBox IsReadOnly="True" Width="170"
                                  Text="{Binding Path=PathUnhidingText}"
                                  ToolTip="Путь сохранения текста"/>
                         <Button Click="Button_Click_5">...</Button>
@@ -76,7 +76,7 @@
                 <StackPanel HorizontalAlignment="Center">
                     <Label>Пустой контейнер:</Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="False" Width="170"
+                        <TextBox IsReadOnly="True" Width="170"
                                  Text="{Binding Path=PathEmptyContainer}"
                                  ToolTip="Путь до пустого контейнера"/>
                         <Button Click="Button_Click_7">...</Button>
@@ -84,7 +84,7 @@
 
                     <Label>Стегоконтейнер:</Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="False" Width="170"
+                        <TextBox IsReadOnly="True" Width="170"
                                  Text="{Binding Path=PathStegoContainer}"
                                  ToolTip="Путь до стегоконтейнера"/>
                         <Button Click="Button_Click_8">...</Button>
