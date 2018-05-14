@@ -6,11 +6,10 @@
         xmlns:local="clr-namespace:StegoApp"
         mc:Ignorable="d"
         ResizeMode="NoResize"
-        SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
         Title="Результат сравнения контейнеров"
-        Height="300" Width="300">
+        Height="300" Width="320">
     <Grid>
-        <Image x:Name="DiffImage"/>
+        <Image x:Name="DiffImage" Width="320" Height="300"/>
     </Grid>
 </Window>
