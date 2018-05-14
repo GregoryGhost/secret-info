@@ -17,16 +17,13 @@ namespace StegoApp
         /// <param name="prop">Название свойства</param>
         public void OnPropertyChanged([CallerMemberName]string prop = "")
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
     }
 
     public class PackerViewModel : Notify
     {
-        private readonly LeastSignificantBit _workerSLB;
+        private readonly IPacker _workerSLB;
         private readonly HelperIO _helperIO;
         private string _pathImage = string.Empty;
         private string _pathHidingText = string.Empty;
@@ -97,7 +94,7 @@ namespace StegoApp
         private string _pathUnhidingText = string.Empty;
         private string _pathStegoContainer = string.Empty;
 
-        private readonly LeastSignificantBit _workerSLB;
+        private readonly IUnpacker _workerSLB;
         private readonly HelperIO _helperIO;
 
         public UnpackerViewModel()

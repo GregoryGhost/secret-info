@@ -11,7 +11,7 @@ namespace StegoModel
     /// Упаковщик/распаковщик стегоконтейнеров, использующий 
     ///     алгоритм LSB(Замена наименее значащего бита).
     /// </summary>
-    public class LeastSignificantBit : IWorker
+    public class LeastSignificantBit : IPacker, IUnpacker
     {
         /// <summary>
         /// Метка (или маркер) начала записи скрываемого текста.
