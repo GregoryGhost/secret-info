@@ -53,8 +53,17 @@ namespace StegoModel
         }
     }
 
+
+    /// <summary>
+    /// Помощник по работе с вводом выводом для текста и изображения.
+    /// </summary>
     public class HelperIO : IHelperIO
     {
+        /// <summary>
+        /// Прочитать изображение по указанному пути.
+        /// </summary>
+        /// <param name="path">Путь до изображения.</param>
+        /// <returns>Прочитанное изображение.</returns>
         public Bitmap ReadImage(string path)
         {
             var bmp = (Bitmap)Image.FromFile(path);
@@ -62,6 +71,11 @@ namespace StegoModel
             return bmp;
         }
 
+        /// <summary>
+        /// Прочитать текст по указанному пути.
+        /// </summary>
+        /// <param name="path">Путь до текста.</param>
+        /// <returns>Текст в байтах.</returns>
         public List<byte> ReadText(string path)
         {
             var file = new FileStream(path, FileMode.Open);
@@ -79,11 +93,21 @@ namespace StegoModel
             return text;
         }
 
+        /// <summary>
+        /// Записать изображение по указанному пути.
+        /// </summary>
+        /// <param name="path">Расположение изображения.</param>
+        /// <param name="image">Записываемое изображение.</param>
         public void WriteImage(string path, Bitmap image)
         {
             image.Save(path, System.Drawing.Imaging.ImageFormat.Bmp);
         }
 
+        /// <summary>
+        /// Записать текст по указанному пути.
+        /// </summary>
+        /// <param name="path">Расположение текста.</param>
+        /// <param name="text">Записываемый текст в байтах.</param>
         public void WriteText(string path, List<byte> text)
         {
             var t = Encoding.GetEncoding(1251).GetString(text.ToArray());
