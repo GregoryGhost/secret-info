@@ -9,8 +9,16 @@ using System.Threading.Tasks;
 
 namespace StegoModel
 {
+    /// <summary>
+    /// Методы расширения по конвертации битов и байтов между собой.
+    /// </summary>
     public static class BitsExtension
     {
+        /// <summary>
+        /// Представление байта как восемь бит.
+        /// </summary>
+        /// <param name="src">Исходный байт.</param>
+        /// <returns>Возвращает массив бит.</returns>
         public static BitArray ToBits(this byte src)
         {
             const int sizeByte = 8;
@@ -26,6 +34,11 @@ namespace StegoModel
             return bitArray;
         }
 
+        /// <summary>
+        /// Представление 8 бит как один байт.
+        /// </summary>
+        /// <param name="scr">Исходный массив бит.</param>
+        /// <returns>Значение байта.</returns>
         public static byte ToByte(this BitArray scr)
         {
             byte num = 0;
