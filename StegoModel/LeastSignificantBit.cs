@@ -7,11 +7,26 @@ using System.Text;
 
 namespace StegoModel
 {
+    /// <summary>
+    /// Упаковщик/распаковщик стегоконтейнеров, использующий 
+    ///     алгоритм LSB(Замена наименее значащего бита).
+    /// </summary>
     public class LeastSignificantBit : IWorker
     {
+        /// <summary>
+        /// Метка (или маркер) начала записи скрываемого текста.
+        /// </summary>
+        private const string _marker = "/";
+
+        /// <summary>
+        /// Проверяет является ли контейнер стегоконтейнером.
+        /// </summary>
+        /// <param name="sourceImage">Проверяемый стегоконтейнер.</param>
+        /// <returns>Возвращает результат проверки,
+        ///     true - является стегоконтейнером,
+        ///     false - пустой контейнер.</returns>
         public bool IsCombined(Bitmap sourceImage)
         {
-            const string marker = "/";
             bool result = false;
 
             byte[] rez = new byte[1];
@@ -34,20 +49,26 @@ namespace StegoModel
             rez[0] = messageArray.ToByte();
             string m = Encoding.GetEncoding(1251).GetString(rez);
 
-            if (m == marker)
-            {
-                result = true;
-            }
+            result = (m == _marker);
 
             return result;
         }
 
+        /// <summary>
+        /// Упаковывать скрываемый текст в пустой стегоконтейнер.
+        /// </summary>
+        /// <param name="sourceImage">Пустой стегоконтейнер
+        ///     (исходное изображение).</param>
+        /// <param name="text">Текст, который нужно скрыть.</param>
+        /// <returns>Возвращает стегоконтейнер,
+        ///     который содержит скрытый текст.</returns>
         public Bitmap Pack(Bitmap sourceImage, List<byte> text)
         {
-            // в CountText - размер прятываемого текста в байтах
+            // в sizeText - размер скрываемого текста в байтах
             int sizeText = text.Count;
 
-            //проверяем, поместиться ли исходный текст в картинке
+            //проверяем, поместиться ли исходный текст
+            //  в пустом контейнере
             if (sizeText > ((sourceImage.Width * sourceImage.Height) - 4))
             {
                 var msg = $"Размер скрываемого текста" +
@@ -55,14 +76,13 @@ namespace StegoModel
                 throw new ArgumentException(msg, nameof(text));
             }
 
-            //проверяем, может быть картинка уже зашифрована
             if (this.IsCombined(sourceImage))
             {
                 var msg = $"Пустой контейнер является стегоконтейнером.";
                 throw new ArgumentException(msg, nameof(sourceImage));
             }
 
-            var symbols = Encoding.GetEncoding(1251).GetBytes("/");
+            var symbols = Encoding.GetEncoding(1251).GetBytes(_marker);
             var beginSymbols = symbols[0].ToBits();
             var curColor = sourceImage.GetPixel(0, 0);
             var temp = curColor.R.ToBits();
@@ -84,11 +104,10 @@ namespace StegoModel
 
             var nColor = Color.FromArgb(nR, nG, nB);
             Bitmap stegoImage = sourceImage;
-            //в первом пикселе будет маркер, 
-            //  который говорит о том, что картика зашифрована
+            //установка маркера в первый пиксель стегоконтейнера
             stegoImage.SetPixel(0, 0, nColor);
 
-            //записываем количество символов для шифрования
+            //записываем количество символов для упаковки
             WriteCountText(sizeText, stegoImage);
 
             int index = 0;
@@ -105,7 +124,8 @@ namespace StegoModel
                     }
                     BitArray colorArray = pixelColor.R.ToBits();
                     BitArray messageArray = (text[index]).ToBits();
-                    //меняем в нашем цвете биты
+                    //запись в наименее значимые биты стегоконтейнера
+                    //  биты текста
                     colorArray[0] = messageArray[0];
                     colorArray[1] = messageArray[1];
                     byte newR = colorArray.ToByte();
@@ -135,6 +155,13 @@ namespace StegoModel
             return stegoImage;
         }
 
+        /// <summary>
+        /// Распаковать скрытый текст из стегоконтейнера.
+        /// </summary>
+        /// <param name="stegoImage">Стегоконтейнер 
+        ///     (изображение со скрытым текстом).</param>
+        /// <returns>Возвращает скрытый текст 
+        ///     из стегоконтейнера.</returns>
         public List<byte> Unpack(Bitmap stegoImage)
         {
             if (IsCombined(stegoImage) == false)
@@ -143,12 +170,14 @@ namespace StegoModel
                 throw new ArgumentException(msg, nameof(stegoImage));
             }
 
-            //считали количество скрытых символов
+            //считывание размера скрытого текста
             int nSymbols = ReadCountText(stegoImage);
             var message = new byte[nSymbols];
             int index = 0;
             bool st = false;
 
+            //извлечение скрытого текста из менее значимых битов RGB 
+            //  каналов стегоконтейнера
             for (int i = 4; i < stegoImage.Width; i++)
             {
                 for (int j = 0; j < stegoImage.Height; j++)
@@ -186,18 +215,25 @@ namespace StegoModel
             return message.OfType<byte>().ToList();
         }
 
+        /// <summary>
+        /// Прочитать размер текста, скрытого в стегоконтейнере.
+        /// </summary>
+        /// <param name="src">Стегоконтейнер 
+        ///     (изображение со скрытым текстом).</param>
+        /// <returns>Возвращает размер 
+        ///     скрытого текста в байтах.</returns>
         private int ReadCountText(Bitmap src)
         {
             //массив на 3 элемента, т.е. максимум 999 символов шифруется
             byte[] rez = new byte[3];
 
+            //подсчет размера текста из RGB каналов 
+            //  текста, скрытого в стегоконтейнере
             for (int i = 0; i < 3; i++)
             {
-                //цвет 1, 2, 3 пикселей 
                 Color color = src.GetPixel(0, i + 1);
-                //биты цвета
                 BitArray colorArray = color.R.ToBits();
-                //инициализация результирующего массива бит
+
                 BitArray bitCount = color.R.ToBits();
                 bitCount[0] = colorArray[0];
                 bitCount[1] = colorArray[1];
@@ -218,10 +254,17 @@ namespace StegoModel
             return Convert.ToInt32(m, 10);
         }
 
+        /// <summary>
+        /// Записывает размер скрываемого текста в стегоконтейнер.
+        /// </summary>
+        /// <param name="count">Размер скрываемого текста.</param>
+        /// <param name="src">Пустой стегоконтейнер.</param>
         private void WriteCountText(int count, Bitmap src)
         {
-            byte[] countSymbols = Encoding.GetEncoding(1251).GetBytes(count.ToString());
+            byte[] countSymbols = Encoding.GetEncoding(1251).GetBytes(
+                count.ToString());
 
+            //запись размера скрываемого текста в стегоконтейнер
             for (int i = 0; i < 3; i++)
             {
                 //биты количества символов
@@ -253,7 +296,7 @@ namespace StegoModel
 
                 //новый цвет из полученных битов
                 Color nColor = Color.FromArgb(nR, nG, nB);
-                //записали полученный цвет в картинку
+                //запись полученного цвет в картинку
                 src.SetPixel(0, i + 1, nColor);
             }
         }
