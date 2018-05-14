@@ -62,6 +62,11 @@ namespace StegoModel
         /// <param name="text">Текст, который нужно скрыть.</param>
         /// <returns>Возвращает стегоконтейнер,
         ///     который содержит скрытый текст.</returns>
+        /// <exception cref="ArgumentException">
+        /// Возникает, когда размер скрываемого текста 
+        ///     больше размера пустого контейнера,
+        ///     а также, когда пустой контейнер
+        ///     уже является стегоконтейнером.</exception>
         public Bitmap Pack(Bitmap sourceImage, List<byte> text)
         {
             // в sizeText - размер скрываемого текста в байтах
@@ -162,6 +167,9 @@ namespace StegoModel
         ///     (изображение со скрытым текстом).</param>
         /// <returns>Возвращает скрытый текст 
         ///     из стегоконтейнера.</returns>
+        /// <exception cref="ArgumentException">
+        /// Возникает, когда стегоконтейнер 
+        ///     является пустым контейнером.</exception>
         public List<byte> Unpack(Bitmap stegoImage)
         {
             if (IsCombined(stegoImage) == false)
