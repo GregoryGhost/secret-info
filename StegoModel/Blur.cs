@@ -3,33 +3,57 @@ using System.Drawing;
 
 namespace StegoModel
 {
-    namespace Convolution
+    namespace ImageFilter
     {
-        public class Blur
+        /// <summary>
+        /// Фильтр для изображений.
+        /// </summary>
+        public interface IFilterImage
         {
+            /// <summary>
+            /// Применить фильтр к изображению.
+            /// </summary>
+            /// <param name="input">Исходное изображение.</param>
+            /// <param name="size">Размер матрицы свертки.</param>
+            /// <returns>Возвращает изображение,
+            ///     к которому был применен фильтр.</returns>
+            Bitmap Apply(Bitmap input, Int32 size);
+        }
+
+        /// <summary>
+        /// Фильтр размытия изображения.
+        /// </summary>
+        public class Blur : IFilterImage
+        {
+            /// <summary>
+            /// Размыть изображение по свертке фильтра размытия.
+            /// </summary>
+            /// <param name="input">Исходное изображение для размытия.</param>
+            /// <param name="filter">Матрица свертки для размытия.</param>
+            /// <returns>Размытое изображение.</returns>
             private Bitmap Convolve(Bitmap input, float[,] filter)
             {
                 //Find center of filter
-                int xMiddle = (int)Math.Floor(filter.GetLength(0) / 2.0);
-                int yMiddle = (int)Math.Floor(filter.GetLength(1) / 2.0);
+                var xMiddle = (int)Math.Floor(filter.GetLength(0) / 2.0);
+                var yMiddle = (int)Math.Floor(filter.GetLength(1) / 2.0);
 
-                //Create new image
-                Bitmap output = new Bitmap(input.Width, input.Height);
+                //Конечное изображение
+                var output = new Bitmap(input.Width, input.Height);
 
-                FastBitmap reader = new FastBitmap(input);
-                FastBitmap writer = new FastBitmap(output);
+                var reader = new FastBitmap(input);
+                var writer = new FastBitmap(output);
                 reader.LockImage();
                 writer.LockImage();
-
+                
                 for (int x = 0; x < input.Width; x++)
                 {
                     for (int y = 0; y < input.Height; y++)
                     {
-                        float r = 0;
-                        float g = 0;
-                        float b = 0;
+                        var r = 0.0f;
+                        var g = 0.0f;
+                        var b = 0.0f;
 
-                        //Apply filter
+                        //Применение фильтра сглаживание пикселей изображения
                         for (int xFilter = 0; xFilter < filter.GetLength(0); xFilter++)
                         {
                             for (int yFilter = 0; yFilter < filter.GetLength(1); yFilter++)
@@ -37,7 +61,7 @@ namespace StegoModel
                                 int x0 = x - xMiddle + xFilter;
                                 int y0 = y - yMiddle + yFilter;
 
-                                //Only if in bounds
+                                //Если x0, y0 находиться внутри изображения
                                 if (x0 >= 0 && x0 < input.Width &&
                                     y0 >= 0 && y0 < input.Height)
                                 {
@@ -50,7 +74,7 @@ namespace StegoModel
                             }
                         }
 
-                        //Normalize (basic)
+                        //Нормализация (основных цветов RGB)
                         if (r > 255)
                             r = 255;
                         if (g > 255)
@@ -65,8 +89,10 @@ namespace StegoModel
                         if (b < 0)
                             b = 0;
 
-                        //Set the pixel
-                        writer.SetPixel(x, y, Color.FromArgb((int)r, (int)g, (int)b));
+                        var newColor = Color.FromArgb(
+                            (int)r, (int)g, (int)b);
+                        //Установка новых цветов для конечного изображения
+                        writer.SetPixel(x, y, newColor);
                     }
                 }
 
@@ -77,11 +103,14 @@ namespace StegoModel
             }
 
             /// <summary>
-            /// Returns a box filter 1D kernel that is in the format {1,..,n}
+            /// Получить свертку фильтра по горизонтали изображения.
             /// </summary>
+            /// <param name="size">Размер изображения по горизонтали.</param>
+            /// <returns>Возвращает вектор-столбец фильтра
+            ///     в формате {1,..,n}.</returns>
             private float[,] GetHorizontalFilter(int size)
             {
-                float[,] smallFilter = new float[size, 1];
+                var smallFilter = new float[size, 1];
                 float constant = size;
 
                 for (int i = 0; i < size; i++)
@@ -93,11 +122,14 @@ namespace StegoModel
             }
 
             /// <summary>
-            /// Returns a box filter 1D kernel that is in the format {1},...,{n}
+            /// Получить свертку фильтра по вертикали изображения.
             /// </summary>
+            /// <param name="size">Размер изображения по вертикали.</param>
+            /// <returns>Возвращает вектор-строку фильтра
+            ///     в формате {1},...,{n}</returns>
             private float[,] GetVerticalFilter(int size)
             {
-                float[,] smallFilter = new float[1, size];
+                var smallFilter = new float[1, size];
                 float constant = size;
 
                 for (int i = 0; i < size; i++)
@@ -109,11 +141,14 @@ namespace StegoModel
             }
 
             /// <summary>
-            /// Returns a box filter 2D kernel in the format {1,...,n},...,{1,...,n}
+            /// Получить свертку фильтра для изображения.
             /// </summary>
+            /// <param name="size">Размерность квадратной матрицы.</param>
+            /// <returns>Возвращает квадратную матрицу размером NxN
+            ///     в формате {1,...,n},...,{1,...,n}</returns>
             private float[,] GetBoxFilter(int size)
             {
-                float[,] filter = new float[size, size];
+                var filter = new float[size, size];
                 float constant = size * size;
 
                 for (int i = 0; i < filter.GetLength(0); i++)
@@ -127,16 +162,42 @@ namespace StegoModel
                 return filter;
             }
 
+            /// <summary>
+            /// Размытие изображения на основе матрицы свертки.
+            /// </summary>
+            /// <param name="img">Исходное изображение.</param>
+            /// <param name="size">Степерь размытия пикселей.</param>
+            /// <returns>Возвращает размытое изображение.</returns>
             private Bitmap BoxBlur(Image img, int size)
             {
-                //Apply a box filter by convolving the image with a 2D kernel
+                //Применить матрицу свертки для изображения(медленнее)
                 return Convolve(new Bitmap(img), GetBoxFilter(size));
             }
 
+            /// <summary>
+            /// Размытие изображения на основе
+            ///     раздельных векторов свертки.
+            /// </summary>
+            /// <param name="img">Исходное изображение.</param>
+            /// <param name="size">Степерь размытия пикселей.</param>
+            /// <returns>Возвращает размытое изображение.</returns>
             private Bitmap FastBoxBlur(Image img, int size)
             {
-                //Apply a box filter by convolving the image with two separate 1D kernels (faster)
-                return Convolve(Convolve(new Bitmap(img), GetHorizontalFilter(size)), GetVerticalFilter(size));
+                //Применить отдельно векторы-свертки
+                //  для изображения(быстрее)
+                return Convolve(Convolve(new Bitmap(img),
+                    GetHorizontalFilter(size)), GetVerticalFilter(size));
+            }
+
+            /// <summary>
+            /// Применить фильтр к изображению.
+            /// </summary>
+            /// <param name="input">Исходное изображение.</param>
+            /// <returns>Возвращает изображение,
+            ///     к котором был применен фильтр.</returns>
+            public Bitmap Apply(Bitmap input, Int32 size)
+            {
+                return FastBoxBlur(input, size);
             }
         }
     }
