@@ -55,11 +55,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BlurView.xaml.cs">
+      <DependentUpon>BlurView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ShowingDiffContainers.xaml.cs">
       <DependentUpon>ShowingDiffContainers.xaml</DependentUpon>
     </Compile>
     <Compile Include="StegoViewModel.cs" />
     <Compile Include="VisualAttackViewModel.cs" />
+    <Page Include="BlurView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -94,6 +94,29 @@
                             Click="Button_Click_9">Сравнить</Button>
                 </StackPanel>
             </TabItem>
+            <TabItem Header="Размытие" 
+                     DataContext="{StaticResource VisualAttack}">
+                <StackPanel HorizontalAlignment="Center">
+                    <Label>Исходное изображение:</Label>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox IsReadOnly="True" Width="170"
+                                 Text="{Binding Path=PathEmptyContainer}"
+                                 ToolTip="Путь до исходного изображения"/>
+                        <Button Click="Button_Click_10">...</Button>
+                    </StackPanel>
+
+                    <Label>Размытое изображение:</Label>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox IsReadOnly="True" Width="170"
+                                 Text="{Binding Path=PathStegoContainer}"
+                                 ToolTip="Путь до размытого изображения"/>
+                        <Button Click="Button_Click_11">...</Button>
+                    </StackPanel>
+
+                    <Button HorizontalAlignment="Center" Margin="5, 5"
+                            Click="Button_Click_12">Размыть</Button>
+                </StackPanel>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>
