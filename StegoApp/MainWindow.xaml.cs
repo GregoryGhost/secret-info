@@ -37,9 +37,11 @@ namespace StegoApp
         {
             string pathSrcImg = String.Empty;
 
-            var dPic = new OpenFileDialog();
-            dPic.Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*";
+            var dPic = new OpenFileDialog
+            {
+                Filter = "Файлы изображений " +
+                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*"
+            };
 
             if (dPic.ShowDialog() == true)
             {
@@ -53,9 +55,11 @@ namespace StegoApp
         {
             string pathHidingText = String.Empty;
 
-            var dText = new OpenFileDialog();
-            dText.Filter = "Текстовые файлы " +
-                "(*.txt)|*.txt|Все файлы (*.*)|*.*";
+            var dText = new OpenFileDialog
+            {
+                Filter = "Текстовые файлы " +
+                "(*.txt)|*.txt|Все файлы (*.*)|*.*"
+            };
 
             if (dText.ShowDialog() == true)
             {
@@ -69,9 +73,11 @@ namespace StegoApp
         {
             string pathStegoContainer = String.Empty;
 
-            var dSavePic = new SaveFileDialog();
-            dSavePic.Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*";
+            var dSavePic = new SaveFileDialog
+            {
+                Filter = "Файлы изображений " +
+                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*"
+            };
 
             if (dSavePic.ShowDialog() == true)
             {
@@ -104,9 +110,11 @@ namespace StegoApp
         {
             string pathStegoContainer = String.Empty;
 
-            var dSavePic = new OpenFileDialog();
-            dSavePic.Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*";
+            var dSavePic = new OpenFileDialog
+            {
+                Filter = "Файлы изображений " +
+                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*"
+            };
 
             if (dSavePic.ShowDialog() == true)
             {
@@ -157,9 +165,11 @@ namespace StegoApp
         {
             string pathEmptyContainer = String.Empty;
 
-            var dSavePic = new OpenFileDialog();
-            dSavePic.Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*";
+            var dSavePic = new OpenFileDialog
+            {
+                Filter = "Файлы изображений " +
+                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*"
+            };
 
             if (dSavePic.ShowDialog() == true)
             {
@@ -173,9 +183,11 @@ namespace StegoApp
         {
             string pathStegoContainer = String.Empty;
 
-            var dSavePic = new OpenFileDialog();
-            dSavePic.Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*";
+            var dSavePic = new OpenFileDialog
+            {
+                Filter = "Файлы изображений " +
+                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*"
+            };
 
             if (dSavePic.ShowDialog() == true)
             {
@@ -213,9 +225,11 @@ namespace StegoApp
         {
             var pathSrcImage = String.Empty;
 
-            var dOpenPic = new OpenFileDialog();
-            dOpenPic.Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*";
+            var dOpenPic = new OpenFileDialog
+            {
+                Filter = "Файлы изображений " +
+                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*"
+            };
 
             if (dOpenPic.ShowDialog() == true)
             {
@@ -229,9 +243,11 @@ namespace StegoApp
         {
             var path = String.Empty;
 
-            var dSavePic = new SaveFileDialog();
-            dSavePic.Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*";
+            var dSavePic = new SaveFileDialog
+            {
+                Filter = "Файлы изображений " +
+                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*"
+            };
 
             if (dSavePic.ShowDialog() == true)
             {
@@ -267,8 +283,14 @@ namespace StegoApp
         }
     }
 
+
     public static class BitmapExtension
     {
+        /// <summary>
+        /// Конвертировать Bitmap в Image Source WPF контрола.
+        /// </summary>
+        /// <param name="bitmap">Исходное изображение.</param>
+        /// <returns>Возвращает изображение для Image Source WPF.</returns>
         public static BitmapImage ToImageSource(this Bitmap bitmap)
         {
             using (var memory = new System.IO.MemoryStream())
