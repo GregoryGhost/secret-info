@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
-        Title="Размытие изображения" Height="410" Width="615">
+        Title="Размытие изображения" Height="425" Width="615">
     <Grid>
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
@@ -26,15 +26,17 @@
                            Source="{Binding Path=BluredImage}" />
                 </StackPanel>
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Margin="5, 5">
                 <Label>Количество соседних пикселей:</Label>
                 <Label Content="{Binding Path=CountPixels}"/>
                 <Slider Minimum="1" Maximum="10" 
                         Value="{Binding Path=CountPixels}"
-                        Orientation="Horizontal" Width="400"/>
+                        Orientation="Horizontal" Width="400"
+                        TickPlacement="BottomRight"/>
             </StackPanel>
             <Button HorizontalAlignment="Center" 
-                    Click="Button_Click">Применить</Button>
+                    Click="Button_Click"
+                    Margin="5, 5">Применить</Button>
         </StackPanel>
     </Grid>
 </Window>
