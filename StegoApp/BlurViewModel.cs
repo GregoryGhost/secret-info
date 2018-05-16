@@ -62,20 +62,25 @@ namespace StegoApp
             }
             set
             {
-                if(value != String.Empty &&
-                    value != null)
+                if (value == String.Empty ||
+                    value == null)
                 {
-                    _pathSourceImage = value;
-                    _srcImage = _helperIO.ReadImage(_pathSourceImage);
-                    SourceImage = _srcImage.ToImageSource();
-                    OnPropertyChanged(nameof(PathSourceImage));
+                    var msg = "Исходное изображение не задано.";
+                    throw new ArgumentException(msg);
                 }
+                _pathSourceImage = value;
+                _srcImage = _helperIO.ReadImage(_pathSourceImage);
+                SourceImage = _srcImage.ToImageSource();
+                OnPropertyChanged(nameof(PathSourceImage));
             }
         }
 
         /// <summary>
         /// Путь до размытого изображения.
         /// </summary>
+        /// <exception cref="ArgumentException">
+        ///     Возникает, если передан null, пустая строка
+        ///         или другой неверный путь.</exception>
         public string PathBluredImage
         {
             get
@@ -84,12 +89,14 @@ namespace StegoApp
             }
             set
             {
-                if (value != String.Empty &&
-                    value != null)
+                if (value == String.Empty ||
+                    value == null)
                 {
-                    _pathBluredImage = value;
-                    OnPropertyChanged(nameof(PathBluredImage));
+                    var msg = "Путь для размытого изображения не задан.";
+                    throw new ArgumentException(msg);
                 }
+                _pathBluredImage = value;
+                OnPropertyChanged(nameof(PathBluredImage));
             }
         }
 

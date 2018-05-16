@@ -35,23 +35,15 @@ namespace StegoApp
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            string pathSrcImg = String.Empty;
-
-            var dPic = new OpenFileDialog
-            {
-                Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*"
-            };
-
-            if (dPic.ShowDialog() == true)
-            {
-                pathSrcImg = dPic.FileName;
-            }
-
-            _packer.PathSourceImage = pathSrcImg;
+            _packer.PathSourceImage = OpenImage();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            _packer.PathHidingText = OpenTextFile();
+        }
+
+        private string OpenTextFile()
         {
             string pathHidingText = String.Empty;
 
@@ -66,25 +58,12 @@ namespace StegoApp
                 pathHidingText = dText.FileName;
             }
 
-            _packer.PathHidingText = pathHidingText;
+            return pathHidingText;
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            string pathStegoContainer = String.Empty;
-
-            var dSavePic = new SaveFileDialog
-            {
-                Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*"
-            };
-
-            if (dSavePic.ShowDialog() == true)
-            {
-                pathStegoContainer = dSavePic.FileName;
-            }
-
-            _packer.PathStegoContainer = pathStegoContainer;
+            _packer.PathStegoContainer = OpenImage();
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
@@ -108,23 +87,15 @@ namespace StegoApp
 
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
-            string pathStegoContainer = String.Empty;
-
-            var dSavePic = new OpenFileDialog
-            {
-                Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*"
-            };
-
-            if (dSavePic.ShowDialog() == true)
-            {
-                pathStegoContainer = dSavePic.FileName;
-            }
-
-            _unpacker.PathStegoContainer = pathStegoContainer;
+            _unpacker.PathStegoContainer = OpenImage();
         }
 
         private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            _unpacker.PathUnhidingText = SaveTextFile();
+        }
+
+        private string SaveTextFile()
         {
             string pathUnhidingText = String.Empty;
 
@@ -139,7 +110,7 @@ namespace StegoApp
                 pathUnhidingText = dText.FileName;
             }
 
-            _unpacker.PathUnhidingText = pathUnhidingText;
+            return pathUnhidingText;
         }
 
         private void Button_Click_6(object sender, RoutedEventArgs e)
@@ -163,38 +134,12 @@ namespace StegoApp
 
         private void Button_Click_7(object sender, RoutedEventArgs e)
         {
-            string pathEmptyContainer = String.Empty;
-
-            var dSavePic = new OpenFileDialog
-            {
-                Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*"
-            };
-
-            if (dSavePic.ShowDialog() == true)
-            {
-                pathEmptyContainer = dSavePic.FileName;
-            }
-
-            _visualAttack.PathEmptyContainer = pathEmptyContainer;
+            _visualAttack.PathEmptyContainer = OpenImage();
         }
 
         private void Button_Click_8(object sender, RoutedEventArgs e)
         {
-            string pathStegoContainer = String.Empty;
-
-            var dSavePic = new OpenFileDialog
-            {
-                Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*"
-            };
-
-            if (dSavePic.ShowDialog() == true)
-            {
-                pathStegoContainer = dSavePic.FileName;
-            }
-
-            _visualAttack.PathStegoContainer = pathStegoContainer;
+            _visualAttack.PathStegoContainer = OpenImage();
         }
 
         private void Button_Click_9(object sender, RoutedEventArgs e)
@@ -223,7 +168,35 @@ namespace StegoApp
 
         private void Button_Click_10(object sender, RoutedEventArgs e)
         {
-            var pathSrcImage = String.Empty;
+            try
+            {
+                _blurFilter.PathSourceImage = OpenImage();
+            }
+            catch (ArgumentException ex)
+            {
+                var msg = ex.Message;
+                MessageBox.Show(msg, Title, MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private void Button_Click_11(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _blurFilter.PathBluredImage = SaveImage();
+            }
+            catch (ArgumentException ex)
+            {
+                var msg = ex.Message;
+                MessageBox.Show(msg, Title, MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private string OpenImage()
+        {
+            var path = String.Empty;
 
             var dOpenPic = new OpenFileDialog
             {
@@ -233,20 +206,19 @@ namespace StegoApp
 
             if (dOpenPic.ShowDialog() == true)
             {
-                pathSrcImage = dOpenPic.FileName;
+                path = dOpenPic.FileName;
             }
 
-            _blurFilter.PathSourceImage = pathSrcImage;
+            return path;
         }
 
-        private void Button_Click_11(object sender, RoutedEventArgs e)
+        private string SaveImage()
         {
             var path = String.Empty;
-
             var dSavePic = new SaveFileDialog
             {
                 Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*"
+                    "(*.bmp)|*.bmp|Все файлы (*.*)|*.*"
             };
 
             if (dSavePic.ShowDialog() == true)
@@ -254,26 +226,24 @@ namespace StegoApp
                 path = dSavePic.FileName;
             }
 
-            _blurFilter.PathBluredImage = path;
+            return path;
         }
 
         private void Button_Click_12(object sender, RoutedEventArgs e)
         {
-            var msg = String.Empty;
-            if (_blurFilter.PathSourceImage == String.Empty)
+            try
             {
-                msg = "Исходное изображение не задано.";
+                _blurFilter.PathSourceImage = _blurFilter.PathSourceImage;
+                _blurFilter.PathBluredImage = _blurFilter.PathBluredImage;
             }
-            if (_blurFilter.PathBluredImage == String.Empty)
+            catch (ArgumentException ex)
             {
-                msg = "Путь для размытого изображения не задан.";
-            }
-            if(msg != String.Empty)
-            {
+                var msg = ex.Message;
                 MessageBox.Show(msg, Title, MessageBoxButton.OK,
                     MessageBoxImage.Error);
                 return;
             }
+
             //Открыть окно размытия
             var blurWindow = new BlurView
             {
