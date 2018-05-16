@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
-        Title="Размытие изображения" Height="425" Width="615">
+        Title="Размытие изображения" Height="430" Width="650">
     <Grid>
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
@@ -31,7 +31,7 @@
                 <Label Content="{Binding Path=CountPixels}"/>
                 <Slider Minimum="1" Maximum="10" 
                         Value="{Binding Path=CountPixels}"
-                        Orientation="Horizontal" Width="400"
+                        Orientation="Horizontal" Width="410"
                         TickPlacement="BottomRight"/>
             </StackPanel>
             <Button HorizontalAlignment="Center" 

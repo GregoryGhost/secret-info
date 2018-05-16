@@ -1,5 +1,6 @@
 ﻿using StegoModel;
 using StegoModel.ImageFilter;
+using System;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 
@@ -23,7 +24,7 @@ namespace StegoApp
         /// <summary>
         /// Расположение исходного изображения.
         /// </summary>
-        private string _pathSourceImage = string.Empty;
+        private string _pathSourceImage = String.Empty;
 
         /// <summary>
         /// Исходное изображение, загруженное по пути.
@@ -33,7 +34,7 @@ namespace StegoApp
         /// <summary>
         /// Расположение размытого изображения.
         /// </summary>
-        private string _pathBluredImage = string.Empty;
+        private string _pathBluredImage = String.Empty;
 
         /// <summary>
         /// Количество пикселей для фильтра размытия.
@@ -61,11 +62,14 @@ namespace StegoApp
             }
             set
             {
-                _pathSourceImage = value;
-                _srcImage = _helperIO.ReadImage(
-                    _pathSourceImage);
-                SourceImage = _srcImage.ToImageSource();
-                OnPropertyChanged(nameof(PathSourceImage));
+                if(value != String.Empty &&
+                    value != null)
+                {
+                    _pathSourceImage = value;
+                    _srcImage = _helperIO.ReadImage(_pathSourceImage);
+                    SourceImage = _srcImage.ToImageSource();
+                    OnPropertyChanged(nameof(PathSourceImage));
+                }
             }
         }
 
@@ -80,8 +84,12 @@ namespace StegoApp
             }
             set
             {
-                _pathBluredImage = value;
-                OnPropertyChanged(nameof(PathBluredImage));
+                if (value != String.Empty &&
+                    value != null)
+                {
+                    _pathBluredImage = value;
+                    OnPropertyChanged(nameof(PathBluredImage));
+                }
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 
 namespace StegoApp
 {
@@ -14,10 +15,17 @@ namespace StegoApp
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //TODO: поставить курсор загрузки пока применяется фильтр
             var blurFilter = this.DataContext
                 as BlurViewModel;
-            blurFilter.ApllyBlur();
+            try
+            {
+                blurFilter.ApllyBlur();
+            }
+            catch (System.Exception)
+            {
+                MessageBox.Show("Произошла ошибка при размытии.",
+                    Title, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

@@ -211,7 +211,7 @@ namespace StegoApp
 
         private void Button_Click_10(object sender, RoutedEventArgs e)
         {
-            string pathSrcImage = String.Empty;
+            var pathSrcImage = String.Empty;
 
             var dOpenPic = new OpenFileDialog();
             dOpenPic.Filter = "Файлы изображений " +
@@ -243,6 +243,21 @@ namespace StegoApp
 
         private void Button_Click_12(object sender, RoutedEventArgs e)
         {
+            var msg = String.Empty;
+            if (_blurFilter.PathSourceImage == String.Empty)
+            {
+                msg = "Исходное изображение не задано.";
+            }
+            if (_blurFilter.PathBluredImage == String.Empty)
+            {
+                msg = "Путь для размытого изображения не задан.";
+            }
+            if(msg != String.Empty)
+            {
+                MessageBox.Show(msg, Title, MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
+            }
             //Открыть окно размытия
             var blurWindow = new BlurView
             {
