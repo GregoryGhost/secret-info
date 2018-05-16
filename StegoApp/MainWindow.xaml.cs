@@ -1,19 +1,8 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace StegoApp
 {
@@ -25,6 +14,7 @@ namespace StegoApp
         private PackerViewModel _packer;
         private UnpackerViewModel _unpacker;
         private VisualAttackViewModel _visualAttack;
+        private BlurViewModel _blurFilter;
 
         public MainWindow()
         {
@@ -39,54 +29,41 @@ namespace StegoApp
                 as UnpackerViewModel;
             _visualAttack = this.TryFindResource("VisualAttack")
                 as VisualAttackViewModel;
+            _blurFilter = this.TryFindResource("Blur")
+                as BlurViewModel;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            string pathSrcImg = String.Empty;
-
-            var dPic = new OpenFileDialog();
-            dPic.Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*";
-
-            if (dPic.ShowDialog() == true)
-            {
-                pathSrcImg = dPic.FileName;
-            }
-
-            _packer.PathSourceImage = pathSrcImg;
+            _packer.PathSourceImage = OpenImage();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            _packer.PathHidingText = OpenTextFile();
+        }
+
+        private string OpenTextFile()
+        {
             string pathHidingText = String.Empty;
 
-            var dText = new OpenFileDialog();
-            dText.Filter = "Текстовые файлы " +
-                "(*.txt)|*.txt|Все файлы (*.*)|*.*";
+            var dText = new OpenFileDialog
+            {
+                Filter = "Текстовые файлы " +
+                "(*.txt)|*.txt|Все файлы (*.*)|*.*"
+            };
 
             if (dText.ShowDialog() == true)
             {
                 pathHidingText = dText.FileName;
             }
 
-            _packer.PathHidingText = pathHidingText;
+            return pathHidingText;
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            string pathStegoContainer = String.Empty;
-
-            var dSavePic = new SaveFileDialog();
-            dSavePic.Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*";
-
-            if (dSavePic.ShowDialog() == true)
-            {
-                pathStegoContainer = dSavePic.FileName;
-            }
-
-            _packer.PathStegoContainer = pathStegoContainer;
+            _packer.PathStegoContainer = OpenImage();
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
@@ -110,21 +87,15 @@ namespace StegoApp
 
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
-            string pathStegoContainer = String.Empty;
-
-            var dSavePic = new OpenFileDialog();
-            dSavePic.Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*";
-
-            if (dSavePic.ShowDialog() == true)
-            {
-                pathStegoContainer = dSavePic.FileName;
-            }
-
-            _unpacker.PathStegoContainer = pathStegoContainer;
+            _unpacker.PathStegoContainer = OpenImage();
         }
 
         private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            _unpacker.PathUnhidingText = SaveTextFile();
+        }
+
+        private string SaveTextFile()
         {
             string pathUnhidingText = String.Empty;
 
@@ -139,7 +110,7 @@ namespace StegoApp
                 pathUnhidingText = dText.FileName;
             }
 
-            _unpacker.PathUnhidingText = pathUnhidingText;
+            return pathUnhidingText;
         }
 
         private void Button_Click_6(object sender, RoutedEventArgs e)
@@ -163,34 +134,12 @@ namespace StegoApp
 
         private void Button_Click_7(object sender, RoutedEventArgs e)
         {
-            string pathEmptyContainer = String.Empty;
-
-            var dSavePic = new OpenFileDialog();
-            dSavePic.Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*";
-
-            if (dSavePic.ShowDialog() == true)
-            {
-                pathEmptyContainer = dSavePic.FileName;
-            }
-
-            _visualAttack.PathEmptyContainer = pathEmptyContainer;
+            _visualAttack.PathEmptyContainer = OpenImage();
         }
 
         private void Button_Click_8(object sender, RoutedEventArgs e)
         {
-            string pathStegoContainer = String.Empty;
-
-            var dSavePic = new OpenFileDialog();
-            dSavePic.Filter = "Файлы изображений " +
-                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*";
-
-            if (dSavePic.ShowDialog() == true)
-            {
-                pathStegoContainer = dSavePic.FileName;
-            }
-
-            _visualAttack.PathStegoContainer = pathStegoContainer;
+            _visualAttack.PathStegoContainer = OpenImage();
         }
 
         private void Button_Click_9(object sender, RoutedEventArgs e)
@@ -216,10 +165,102 @@ namespace StegoApp
             resultWindow.DiffImage.Source = diff.ToImageSource();
             resultWindow.ShowDialog();
         }
+
+        private void Button_Click_10(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _blurFilter.PathSourceImage = OpenImage();
+            }
+            catch (ArgumentException ex)
+            {
+                var msg = ex.Message;
+                MessageBox.Show(msg, Title, MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private void Button_Click_11(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _blurFilter.PathBluredImage = SaveImage();
+            }
+            catch (ArgumentException ex)
+            {
+                var msg = ex.Message;
+                MessageBox.Show(msg, Title, MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private string OpenImage()
+        {
+            var path = String.Empty;
+
+            var dOpenPic = new OpenFileDialog
+            {
+                Filter = "Файлы изображений " +
+                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*"
+            };
+
+            if (dOpenPic.ShowDialog() == true)
+            {
+                path = dOpenPic.FileName;
+            }
+
+            return path;
+        }
+
+        private string SaveImage()
+        {
+            var path = String.Empty;
+            var dSavePic = new SaveFileDialog
+            {
+                Filter = "Файлы изображений " +
+                    "(*.bmp)|*.bmp|Все файлы (*.*)|*.*"
+            };
+
+            if (dSavePic.ShowDialog() == true)
+            {
+                path = dSavePic.FileName;
+            }
+
+            return path;
+        }
+
+        private void Button_Click_12(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _blurFilter.PathSourceImage = _blurFilter.PathSourceImage;
+                _blurFilter.PathBluredImage = _blurFilter.PathBluredImage;
+            }
+            catch (ArgumentException ex)
+            {
+                var msg = ex.Message;
+                MessageBox.Show(msg, Title, MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
+            }
+
+            //Открыть окно размытия
+            var blurWindow = new BlurView
+            {
+                DataContext = _blurFilter
+            };
+            blurWindow.ShowDialog();
+        }
     }
+
 
     public static class BitmapExtension
     {
+        /// <summary>
+        /// Конвертировать Bitmap в Image Source WPF контрола.
+        /// </summary>
+        /// <param name="bitmap">Исходное изображение.</param>
+        /// <returns>Возвращает изображение для Image Source WPF.</returns>
         public static BitmapImage ToImageSource(this Bitmap bitmap)
         {
             using (var memory = new System.IO.MemoryStream())
