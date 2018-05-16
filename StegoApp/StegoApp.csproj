@@ -58,6 +58,7 @@
     <Compile Include="BlurView.xaml.cs">
       <DependentUpon>BlurView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BlurViewModel.cs" />
     <Compile Include="ShowingDiffContainers.xaml.cs">
       <DependentUpon>ShowingDiffContainers.xaml</DependentUpon>
     </Compile>

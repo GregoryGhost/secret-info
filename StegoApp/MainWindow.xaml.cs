@@ -14,6 +14,7 @@ namespace StegoApp
         private PackerViewModel _packer;
         private UnpackerViewModel _unpacker;
         private VisualAttackViewModel _visualAttack;
+        private BlurViewModel _blurFilter;
 
         public MainWindow()
         {
@@ -28,6 +29,8 @@ namespace StegoApp
                 as UnpackerViewModel;
             _visualAttack = this.TryFindResource("VisualAttack")
                 as VisualAttackViewModel;
+            _blurFilter = this.TryFindResource("Blur")
+                as BlurViewModel;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -208,17 +211,44 @@ namespace StegoApp
 
         private void Button_Click_10(object sender, RoutedEventArgs e)
         {
+            string pathSrcImage = String.Empty;
 
+            var dOpenPic = new OpenFileDialog();
+            dOpenPic.Filter = "Файлы изображений " +
+                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*";
+
+            if (dOpenPic.ShowDialog() == true)
+            {
+                pathSrcImage = dOpenPic.FileName;
+            }
+
+            _blurFilter.PathSourceImage = pathSrcImage;
         }
 
         private void Button_Click_11(object sender, RoutedEventArgs e)
         {
+            var path = String.Empty;
 
+            var dSavePic = new SaveFileDialog();
+            dSavePic.Filter = "Файлы изображений " +
+                "(*.bmp)|*.bmp|Все файлы (*.*)|*.*";
+
+            if (dSavePic.ShowDialog() == true)
+            {
+                path = dSavePic.FileName;
+            }
+
+            _blurFilter.PathBluredImage = path;
         }
 
         private void Button_Click_12(object sender, RoutedEventArgs e)
         {
-
+            //Открыть окно размытия
+            var blurWindow = new BlurView
+            {
+                DataContext = _blurFilter
+            };
+            blurWindow.ShowDialog();
         }
     }
 

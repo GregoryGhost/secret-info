@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:StegoApp"
         mc:Ignorable="d"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
@@ -15,20 +14,27 @@
                             Margin="0, 0 , 5, 0">
                     <Label HorizontalAlignment="Center">
                         Исходное изображение</Label>
-                    <Image Width="300" Height="300"/>
+                    <Image Width="300" Height="300"
+                           x:Name="SourceImage"
+                           Source="{Binding Path=SourceImage}" />
                 </StackPanel>
                 <StackPanel Orientation="Vertical">
                     <Label HorizontalAlignment="Center">
                         Размытое изображение</Label>
-                    <Image Width="300" Height="300"/>
+                    <Image Width="300" Height="300"
+                           x:Name="BlurImage"
+                           Source="{Binding Path=BluredImage}" />
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Label>Количество соседних пикселей:</Label>
-                <Slider Minimum="1" Maximum="10" Value="5"
-                        Orientation="Horizontal"/>
+                <Label Content="{Binding Path=CountPixels}"/>
+                <Slider Minimum="1" Maximum="10" 
+                        Value="{Binding Path=CountPixels}"
+                        Orientation="Horizontal" Width="400"/>
             </StackPanel>
-            <Button HorizontalAlignment="Center" Click="Button_Click">Применить</Button>
+            <Button HorizontalAlignment="Center" 
+                    Click="Button_Click">Применить</Button>
         </StackPanel>
     </Grid>
 </Window>

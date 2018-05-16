@@ -1,6 +1,7 @@
 ﻿using StegoModel;
 using StegoModel.ImageFilter;
 using System.Drawing;
+using System.Windows.Media.Imaging;
 
 namespace StegoApp
 {
@@ -25,6 +26,11 @@ namespace StegoApp
         private string _pathSourceImage = string.Empty;
 
         /// <summary>
+        /// Исходное изображение, загруженное по пути.
+        /// </summary>
+        private Bitmap _srcImage;
+
+        /// <summary>
         /// Расположение размытого изображения.
         /// </summary>
         private string _pathBluredImage = string.Empty;
@@ -32,7 +38,17 @@ namespace StegoApp
         /// <summary>
         /// Количество пикселей для фильтра размытия.
         /// </summary>
-        private int _countPixels;
+        private int _countPixels = 5;
+
+        /// <summary>
+        /// Размытое изображение после применения фильтра.
+        /// </summary>
+        private BitmapImage _bluredImage;
+
+        /// <summary>
+        /// Исходное изображение до применения фильтра.
+        /// </summary>
+        private BitmapImage _sourceImage;
 
         /// <summary>
         /// Путь до исходного изображения.
@@ -46,6 +62,9 @@ namespace StegoApp
             set
             {
                 _pathSourceImage = value;
+                _srcImage = _helperIO.ReadImage(
+                    _pathSourceImage);
+                SourceImage = _srcImage.ToImageSource();
                 OnPropertyChanged(nameof(PathSourceImage));
             }
         }
@@ -63,6 +82,38 @@ namespace StegoApp
             {
                 _pathBluredImage = value;
                 OnPropertyChanged(nameof(PathBluredImage));
+            }
+        }
+
+        /// <summary>
+        /// Исходное изображение.
+        /// </summary>
+        public BitmapImage SourceImage
+        {
+            get
+            {
+                return _sourceImage;
+            }
+            private set
+            {
+                _sourceImage = value;
+                OnPropertyChanged(nameof(SourceImage));
+            }
+        }
+
+        /// <summary>
+        /// Размытое изображение.
+        /// </summary>
+        public BitmapImage BluredImage
+        {
+            get
+            {
+                return _bluredImage;
+            }
+            private set
+            {
+                _bluredImage = value;
+                OnPropertyChanged(nameof(BluredImage));
             }
         }
 
@@ -85,19 +136,14 @@ namespace StegoApp
         /// <summary>
         /// Применить фильтр размытия к исходному изображению.
         /// </summary>
-        /// <returns>Возращает размытое изображение.</returns>
-        public Bitmap ApllyBlur()
+        public void ApllyBlur()
         {
-
-            var srcImage = _helperIO.ReadImage(
-                _pathSourceImage);
-            var bluredImage = _blurFilter.Apply(
-                srcImage, CountPixels);
+            var bluredImg = _blurFilter.Apply(
+                _srcImage, CountPixels);
+            BluredImage = bluredImg.ToImageSource();
 
             _helperIO.WriteImage(
-                _pathBluredImage, bluredImage);
-
-            return bluredImage;
+                PathBluredImage, bluredImg);
         }
     }
 }
