@@ -11,16 +11,21 @@
         ResizeMode="NoResize"
         Loaded="Window_Loaded">
     <Window.Resources>
-        <local:PackerViewModel x:Key="Packer" />
-        <local:UnpackerViewModel x:Key="Unpacker" />
+        <local:StegoSystemViewModel x:Key="StegoSystem"/>
         <local:VisualAttackViewModel x:Key="VisualAttack" />
         <local:BlurViewModel x:Key="Blur"/>
     </Window.Resources>
     <Grid>
         <TabControl>
-            <TabItem Header="Упаковка" 
-                     DataContext="{StaticResource Packer}">
+            <TabItem Header="Упаковка" DataContext="{StaticResource StegoSystem}">
                 <StackPanel HorizontalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="70" HorizontalContentAlignment="Left">
+                            Алгоритм:</Label>
+                        <ComboBox Width="110" ItemsSource="{Binding Names}" 
+                                  SelectedItem="{Binding Path=SelectedPackerName, Mode=TwoWay}"/>
+                    </StackPanel>
+
                     <Label>Пустой контейнер:</Label>
                     <StackPanel Orientation="Horizontal">
                         <TextBox IsReadOnly="True" Width="170" 
@@ -49,9 +54,17 @@
                             Click="Button_Click_3">Упаковать</Button>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Извлечение" 
-                     DataContext="{StaticResource Unpacker}">
+            <TabItem Header="Извлечение"
+                     DataContext="{StaticResource StegoSystem}">
                 <StackPanel HorizontalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="70" HorizontalContentAlignment="Left">
+                            Алгоритм:</Label>
+                        <ComboBox Width="110" ItemsSource="{Binding Names}" 
+                                  SelectedItem="{Binding Path=SelectedUnpackerName, Mode=TwoWay}"/>
+                    </StackPanel>
+
+
                     <Label>Стегоконтейнер:</Label>
                     <StackPanel Orientation="Horizontal">
                         <TextBox IsReadOnly="True" Width="170"
