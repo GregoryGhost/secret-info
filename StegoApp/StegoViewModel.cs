@@ -51,9 +51,9 @@ namespace StegoApp
         }
 
         /// <summary>
-        /// Доступные стеганографические алгоритмы.
+        /// Названия доступных стеганографических алгоритмов.
         /// </summary>
-        public List<string> NamesStegoAlgorithms
+        public List<string> Names
         {
             get
             {
@@ -105,16 +105,39 @@ namespace StegoApp
         /// <summary>
         /// Выбранный стеганографический алгоритм распаковки и упаковки.
         /// </summary>
-        public Tuple<PackerViewModel, UnpackerViewModel> SelectedStegoAlgo
+        private Tuple<PackerViewModel, UnpackerViewModel> SelectedStegoAlgo
         {
             get
             {
                 return _currentStegoAlgo;
             }
-            private set
+            set
             {
                 _currentStegoAlgo = value;
-                OnPropertyChanged(nameof(SelectedStegoAlgo));
+                OnPropertyChanged(nameof(SelectedPacker));
+                OnPropertyChanged(nameof(SelectedUnpacker));
+            }
+        }
+
+        /// <summary>
+        /// Выбранный стеганографический алгоритм упаковки.
+        /// </summary>
+        private PackerViewModel SelectedPacker
+        {
+            get
+            {
+                return _currentStegoAlgo.Item1;
+            }
+        }
+
+        /// <summary>
+        /// Выбранный стеганографический алгоритм распаковки.
+        /// </summary>
+        private UnpackerViewModel SelectedUnpacker
+        {
+            get
+            {
+                return _currentStegoAlgo.Item2;
             }
         }
     }
