@@ -122,4 +122,64 @@ namespace StegoModel
             }
         }
     }
+
+
+    public class ExtractorRGB
+    {
+        private int[,] _redChannel;
+        private int[,] _greenChannel;
+        private int[,] _blueChannel;
+
+        public void ExtractRGB(Bitmap image)
+        {
+            var w = image.Width;
+            var h = image.Height;
+            _redChannel = new int[h, w];
+            _greenChannel = new int[h, w];
+            _blueChannel = new int[h, w];
+            var pixel = new Color();
+
+            for (int i = 0; i < h; i++)
+            {
+                for (int j = 0; j < w; j++)
+                {
+                    pixel = image.GetPixel(i, j);
+                    _redChannel[i, j] = pixel.R;
+                    _greenChannel[i, j] = pixel.G;
+                    _blueChannel[i, j] = pixel.B;
+                }
+            }
+        }
+
+        public void ChangeBlueChannel(Bitmap image, int[,] blue)
+        {
+            var w = image.Width;
+            var h = image.Height;
+            Color pixel;
+            for (int i = 2; i < w; i++)
+            {
+                for (int j = 2; j < h; ++j)
+                {
+                    pixel = image.GetPixel(i, j);
+                    var c = Color.FromArgb(pixel.R, pixel.G, blue[i, j]);
+                    image.SetPixel(i, j, c);
+                }
+            }
+        }
+
+        public int[,] getR()
+        {
+            return _redChannel;
+        }
+
+        public int[,] getG()
+        {
+            return _greenChannel;
+        }
+
+        public int[,] getB()
+        {
+            return _blueChannel;
+        }
+    }
 }
