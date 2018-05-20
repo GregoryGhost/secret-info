@@ -105,7 +105,7 @@ namespace StegoApp
         /// <summary>
         /// Выбранный стеганографический алгоритм распаковки и упаковки.
         /// </summary>
-        private Tuple<PackerViewModel, UnpackerViewModel> SelectedStegoAlgo
+        public Tuple<PackerViewModel, UnpackerViewModel> SelectedStegoAlgo
         {
             get
             {
@@ -122,7 +122,7 @@ namespace StegoApp
         /// <summary>
         /// Выбранный стеганографический алгоритм упаковки.
         /// </summary>
-        private PackerViewModel SelectedPacker
+        public PackerViewModel SelectedPacker
         {
             get
             {
@@ -133,7 +133,7 @@ namespace StegoApp
         /// <summary>
         /// Выбранный стеганографический алгоритм распаковки.
         /// </summary>
-        private UnpackerViewModel SelectedUnpacker
+        public UnpackerViewModel SelectedUnpacker
         {
             get
             {
