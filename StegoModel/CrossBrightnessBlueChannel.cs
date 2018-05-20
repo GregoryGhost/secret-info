@@ -19,6 +19,8 @@ namespace StegoModel
 
         private ExtractorRGB _rgbExtractor;
 
+        private static List<Point> _key = null;
+
         public CrossBrightnessBlueChannel()
         {
             _rgbExtractor = new ExtractorRGB();
@@ -40,7 +42,15 @@ namespace StegoModel
         ///     уже является стегоконтейнером.</exception>
         public Bitmap Pack(Bitmap sourceImage, List<byte> text)
         {
-            throw new NotImplementedException();
+            const int codepage = 1251;
+            var msg = Encoding.GetEncoding(
+                codepage).GetString(text.ToArray());
+            var packedImg = sourceImage.Clone()
+                as Bitmap;
+
+            _key = HideMessage(msg, packedImg);
+
+            return packedImg;
         }
 
         /// <summary>
@@ -56,7 +66,10 @@ namespace StegoModel
         ///     больше размера пустого контейнера.</exception>
         public List<byte> Unpack(Bitmap stegoImage)
         {
-            throw new NotImplementedException();
+            var msg = ExtractMessage(stegoImage, _key);
+            var unpackMsg = Encoding.Default.GetBytes(msg).ToList();
+
+            return unpackMsg;
         }
 
         private List<Point> HideMessage(string text, Bitmap image)
@@ -89,21 +102,22 @@ namespace StegoModel
                 }
             }
 
-            var bitArray = MessageToBitArray(text);
+            var bitsMsg = MessageToBitArray(text);
 
             var coords = new List<Point>();
 
             //выбор новой точки для сообщения
-            for (int i = 0; i < bitArray.Length; i++)
+            for (int i = 0; i < bitsMsg.Length; i++)
             {
                 var p = RandomPoint(coords, width, height);
                 bStar[p.X, p.Y] = ChangeBlueValue(
-                    b[p.X, p.Y], y[p.X, p.Y], bitArray[i]);
+                    b[p.X, p.Y], y[p.X, p.Y], bitsMsg[i]);
                 coords.Add(p);
             }
 
             //запись нового синего цвета
             _rgbExtractor.ChangeBlueChannel(image, bStar);
+
             return coords;
         }
 
@@ -142,7 +156,7 @@ namespace StegoModel
         {
 
             _rgbExtractor.ExtractRGB(image);
-            int[,] blues = _rgbExtractor.getB();
+            var blues = _rgbExtractor.getB();
             var builder = new StringBuilder
             {
                 Length = 0
@@ -171,12 +185,12 @@ namespace StegoModel
 
         private int RetrieveBit(int[,] b, int x, int y)
         {
-            //assumpt that SIGMA = 2 
             double value = 0;
+            //при _sigma = 2 
             value = b[x - 2, y] + b[x - 1, y] + b[x + 1, y] + b[x + 2, y]
                     + b[x, y - 2] + b[x, y - 1] + b[x, y + 1] + b[x, y + 2];
 
-            value = value / 8;
+            value = value / (4 * _sigma);
             var delta = b[x, y] - value;
 
             if (delta == 0)
