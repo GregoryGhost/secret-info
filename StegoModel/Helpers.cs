@@ -124,12 +124,30 @@ namespace StegoModel
     }
 
 
+    /// <summary>
+    /// Помогает работать с RGB каналами изображения.
+    /// </summary>
     public class ExtractorRGB
     {
+        /// <summary>
+        /// Красный канал изображения.
+        /// </summary>
         private int[,] _redChannel;
+
+        /// <summary>
+        /// Зеленый канал изображения.
+        /// </summary>
         private int[,] _greenChannel;
+
+        /// <summary>
+        /// Синий канал изображения.
+        /// </summary>
         private int[,] _blueChannel;
 
+        /// <summary>
+        /// Извлечения RGB-каналов из изображения.
+        /// </summary>
+        /// <param name="image">Исходное изображение.</param>
         public void ExtractRGB(Bitmap image)
         {
             var w = image.Width;
@@ -151,6 +169,11 @@ namespace StegoModel
             }
         }
 
+        /// <summary>
+        /// Заменить синий канал(в RGB модели) изображения.
+        /// </summary>
+        /// <param name="image">Исходное изображение.</param>
+        /// <param name="blue">Новый синий канал изображения.</param>
         public void ChangeBlueChannel(Bitmap image, int[,] blue)
         {
             var w = image.Width;
@@ -167,19 +190,31 @@ namespace StegoModel
             }
         }
 
-        public int[,] GetR()
+        /// <summary>
+        /// Красный канал изображения.
+        /// </summary>
+        /// <returns></returns>
+        public int[,] R
         {
-            return _redChannel;
+            get { return _redChannel; }
         }
 
-        public int[,] GetG()
+        /// <summary>
+        /// Зеленый канал изображения.
+        /// </summary>
+        /// <returns></returns>
+        public int[,] G
         {
-            return _greenChannel;
+            get { return _greenChannel; }
         }
 
-        public int[,] GetB()
+        /// <summary>
+        /// Синий канал изображения.
+        /// </summary>
+        /// <returns></returns>
+        public int[,] B
         {
-            return _blueChannel;
+            get { return _blueChannel; }
         }
     }
 }

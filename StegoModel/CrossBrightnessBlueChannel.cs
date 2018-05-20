@@ -100,9 +100,9 @@ namespace StegoModel
             }
             _rgbExtractor.ExtractRGB(image);
             //каналы RGB изображения
-            var r = _rgbExtractor.GetR();
-            var g = _rgbExtractor.GetG();
-            var b = _rgbExtractor.GetB();
+            var r = _rgbExtractor.R;
+            var g = _rgbExtractor.G;
+            var b = _rgbExtractor.B;
             var bStar = new int[w, h];
 
             //var y = CalculateBrightness(r, g, b, w, h);
@@ -170,9 +170,9 @@ namespace StegoModel
         public string ExtractMessage(Bitmap image)
         {
             _rgbExtractor.ExtractRGB(image);
-            var r = _rgbExtractor.GetR();
-            var g = _rgbExtractor.GetG();
-            var b = _rgbExtractor.GetB();
+            var r = _rgbExtractor.R;
+            var g = _rgbExtractor.G;
+            var b = _rgbExtractor.B;
 
             var w = image.Width;
             var h = image.Height;
