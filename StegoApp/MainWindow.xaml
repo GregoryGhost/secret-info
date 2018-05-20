@@ -29,7 +29,7 @@
                     <Label>Пустой контейнер:</Label>
                     <StackPanel Orientation="Horizontal">
                         <TextBox IsReadOnly="True" Width="170" 
-                                 Text="{Binding Path=PathSourceImage}"
+                                 Text="{Binding Path=SelectedPacker.PathSourceImage}"
                                  ToolTip="Путь до пустого контейнера"/>
                         <Button Click="Button_Click">...</Button>
                     </StackPanel>
@@ -37,7 +37,7 @@
                     <Label>Скрываемый текст:</Label>
                     <StackPanel Orientation="Horizontal">
                         <TextBox IsReadOnly="True" Width="170"
-                                 Text="{Binding Path=PathHidingText}"
+                                 Text="{Binding Path=SelectedPacker.PathHidingText}"
                                  ToolTip="Путь до скрываемого текста"/>
                         <Button Click="Button_Click_1">...</Button>
                     </StackPanel>
@@ -45,7 +45,7 @@
                     <Label>Стегоконтейнер:</Label>
                     <StackPanel Orientation="Horizontal">
                         <TextBox IsReadOnly="True" Width="170"
-                                 Text="{Binding Path=PathStegoContainer}"
+                                 Text="{Binding Path=SelectedPacker.PathStegoContainer}"
                                  ToolTip="Путь сохранения стегоконтейнера"/>
                         <Button Click="Button_Click_2">...</Button>
                     </StackPanel>
@@ -61,14 +61,15 @@
                         <Label Width="70" HorizontalContentAlignment="Left">
                             Алгоритм:</Label>
                         <ComboBox Width="110" ItemsSource="{Binding Names}" 
-                                  SelectedItem="{Binding Path=SelectedUnpackerName, Mode=TwoWay}"/>
+                                  SelectedItem="{Binding Path=SelectedUnpackerName,
+                                    Mode=TwoWay}"/>
                     </StackPanel>
 
 
                     <Label>Стегоконтейнер:</Label>
                     <StackPanel Orientation="Horizontal">
                         <TextBox IsReadOnly="True" Width="170"
-                                 Text="{Binding Path=PathStegoContainer}"
+                                 Text="{Binding Path=SelectedUnpacker.PathStegoContainer}"
                                  ToolTip="Путь до стегоконтейнера"/>
                         <Button Click="Button_Click_4">...</Button>
                     </StackPanel>
@@ -76,7 +77,7 @@
                     <Label>Получаемый текст:</Label>
                     <StackPanel Orientation="Horizontal">
                         <TextBox IsReadOnly="True" Width="170"
-                                 Text="{Binding Path=PathUnhidingText}"
+                                 Text="{Binding Path=SelectedUnpacker.PathUnhidingText}"
                                  ToolTip="Путь сохранения текста"/>
                         <Button Click="Button_Click_5">...</Button>
                     </StackPanel>
