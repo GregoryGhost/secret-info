@@ -13,13 +13,13 @@ namespace StegoModel
     /// </summary>
     public class CrossBrightnessBlueChannel : IPacker, IUnpacker
     {
-        private readonly double _lambda = 0.1;
+        private readonly double _lambda = 0.5;
 
-        private readonly int _sigma = 2;
+        private readonly int _sigma = 3;
 
         private ExtractorRGB _rgbExtractor;
 
-        private static List<Point> _key = null;
+        private const int _codepage = 1251;
 
         public CrossBrightnessBlueChannel()
         {
@@ -42,13 +42,12 @@ namespace StegoModel
         ///     уже является стегоконтейнером.</exception>
         public Bitmap Pack(Bitmap sourceImage, List<byte> text)
         {
-            const int codepage = 1251;
-            var msg = Encoding.GetEncoding(
-                codepage).GetString(text.ToArray());
-            var packedImg = sourceImage.Clone()
-                as Bitmap;
+            var msg = Encoding.Default.GetString(text.ToArray());
+            //var packedImg = sourceImage.Clone()
+            //    as Bitmap;
+            var packedImg = sourceImage;
 
-            _key = HideMessage(msg, packedImg);
+            packedImg = HideMessage(msg, packedImg);
 
             return packedImg;
         }
@@ -66,19 +65,21 @@ namespace StegoModel
         ///     больше размера пустого контейнера.</exception>
         public List<byte> Unpack(Bitmap stegoImage)
         {
-            var msg = ExtractMessage(stegoImage, _key);
-            var unpackMsg = Encoding.Default.GetBytes(msg).ToList();
+            var container = stegoImage;//stegoImage.Clone() as Bitmap;
+            var msg = ExtractMessage(container);
+            var unpackMsg = Encoding.Default
+                .GetBytes(msg).ToList();
 
             return unpackMsg;
         }
 
-        private List<Point> HideMessage(string text, Bitmap image)
+        private Bitmap HideMessage(string text, Bitmap image)
         {
-            var width = image.Width;
-            var height = image.Height;
+            var w = image.Width;
+            var h = image.Height;
             //проверяем, поместиться ли исходный текст
             //  в пустом контейнере
-            if (text.Length * 8 > width * height)
+            if (text.Length * 8 > w * h)
             {
                 var msg = $"Размер скрываемого текста" +
                     $" больше размера пустого контейнера.";
@@ -86,128 +87,111 @@ namespace StegoModel
             }
             _rgbExtractor.ExtractRGB(image);
             //каналы RGB изображения
-            var r = _rgbExtractor.getB();
-            var g = _rgbExtractor.getG();
-            var b = _rgbExtractor.getB();
-            var bStar = new int[width, height];
+            var r = _rgbExtractor.GetR();
+            var g = _rgbExtractor.GetG();
+            var b = _rgbExtractor.GetB();
+            var bStar = new int[w, h];
 
-            var y = CalculateBrightness(r, g, b, width, height);
+            //var y = CalculateBrightness(r, g, b, w, h);
             //инициализация нового массива синего канала
-            for (int i = 0; i < width; i++)
+            for (int i = 0; i < w; i++)
             {
-                for (int j = 0; j < height; j++)
+                for (int j = 0; j < h; j++)
                 {
                     bStar[i, j] = b[i, j];
                 }
             }
 
             var bitsMsg = MessageToBitArray(text);
+            var chars = bitsMsg.ToCharArray();
+            var pixels = new int[chars.Length];
 
-            var coords = new List<Point>();
-
-            //выбор новой точки для сообщения
-            for (int i = 0; i < bitsMsg.Length; i++)
+            for (int j = _sigma; j < h - h % 7; j += 7)
             {
-                var p = RandomPoint(coords, width, height);
-                bStar[p.X, p.Y] = ChangeBlueValue(
-                    b[p.X, p.Y], y[p.X, p.Y], bitsMsg[i]);
-                coords.Add(p);
-            }
-
-            //запись нового синего цвета
-            _rgbExtractor.ChangeBlueChannel(image, bStar);
-
-            return coords;
-        }
-
-        private Point RandomPoint(List<Point> currentPoints,
-            int width, int height)
-        {
-            var f = true;
-            var random = new Random();
-            int x = 0, y = 0;
-            while (f)
-            {
-                x = Math.Abs(random.Next()) % (width - 4) + _sigma;
-                y = Math.Abs(random.Next()) % (height - 4) + _sigma;
-                f = CheckExisting(currentPoints, new Point(x, y));
-            }
-            var p = new Point(x, y);
-
-            return p;
-        }
-
-        private bool CheckExisting(List<Point> points, Point point)
-        {
-            var f = false;
-            for (int i = 0; !f && i < points.Count; i++)
-            {
-                if (points[i].X == point.X
-                    && points[i].Y == point.Y)
+                for (int i = _sigma; i < w - w % 7; i += 7)
                 {
-                    f = true;
+                    for (int t = 0; t < chars.Length; t++)
+                    {
+                        int br = Convert.ToInt32(
+                            (0.299 * r[i, j] + 0.587 * g[i, j]
+                                + 0.114 * b[i, j]) * _lambda);
+                        var ch = chars[t];
+                        int sing = (2 * Convert.ToInt32(
+                            Convert.ToString(ch)) - 1);
+
+                        pixels[t] = b[i, j] + sing * br;
+                        if (pixels[t] < 0)
+                            pixels[t] = 0;
+                        if (pixels[t] > 255)
+                            pixels[t] = 255;
+                    }
                 }
             }
-            return f;
+
+            var k = 0;
+            for (int j = _sigma; j < h - h % 7; j += 7)
+            {
+                for (int i = _sigma; i < w - w % 7; i += 7)
+                {
+                    if (h >= chars.Length)
+                        break;
+                    bStar[i, j] = pixels[k];
+                    k++;
+                }
+            }
+
+            _rgbExtractor.ChangeBlueChannel(image, bStar);
+
+            return image;
         }
 
-        public string ExtractMessage(Bitmap image, List<Point> coords)
+        public string ExtractMessage(Bitmap image)
         {
 
             _rgbExtractor.ExtractRGB(image);
-            var blues = _rgbExtractor.getB();
-            var builder = new StringBuilder
-            {
-                Length = 0
-            };
-            var s = new StringBuilder();
+            var r = _rgbExtractor.GetR();
+            var g = _rgbExtractor.GetG();
+            var b = _rgbExtractor.GetB();
 
-            int count = 0;
-            int bit;
+            var w = image.Width;
+            var h = image.Height;
+            var bStar = new int[w, h];
+            var text = "";
 
-            for (int i = 0; i < coords.Count; i++)
+            for (int j = _sigma; j < h - h % 7; j += 7)
             {
-                var p = coords[i];
-                bit = RetrieveBit(blues, p.X, p.Y);
-                s.Append(bit);
-                count++;
-                if (count == 8)
-                {
-                    int character = Convert.ToInt32(s.ToString(), 2);
-                    builder.Append((char)character);
-                    count = 0;
-                    s.Length = 0;
+                for (int i = _sigma; i < w - w % 7; i += 7)
+                { //распаковка при _sigma = 3
+                    bStar[i, j] = (b[i - 1, j] + b[i - 2, j]
+                        + b[i - 3, j] + b[i, j - 1]
+                        + b[i, j - 2] + b[i, j - 3]
+                        + b[i + 1, j] + b[i + 2, j]
+                        + b[i + 3, j] + b[i, j + 1]
+                        + b[i, j + 2] + b[i, j + 3]) / (4 * _sigma);
+
+                    if (b[i, j] > bStar[i, j])
+                        text += "1";
+                    if (b[i, j] < bStar[i, j])
+                        text += "0";
                 }
             }
-            return builder.ToString();
-        }
 
-        private int RetrieveBit(int[,] b, int x, int y)
-        {
-            double value = 0;
-            //при _sigma = 2 
-            value = b[x - 2, y] + b[x - 1, y] + b[x + 1, y] + b[x + 2, y]
-                    + b[x, y - 2] + b[x, y - 1] + b[x, y + 1] + b[x, y + 2];
-
-            value = value / (4 * _sigma);
-            var delta = b[x, y] - value;
-
-            if (delta == 0)
+            //перевод в строку из битовой строки
+            var bt = new byte[1];
+            //var info = new string[text.Length / 8];
+            var info = "";
+            for (int i = 0; i < text.Length / 8; i++)
             {
-                if (b[x, y] == 0)
+                var str = "";
+                for (int j = 0; j < 8; j++)
                 {
-                    delta = -0.5;
+                    str += Convert.ToString(text[i * 8 + j]);
                 }
-                if (b[x, y] == 255)
-                {
-                    delta = 0.5;
-                }
+                bt[0] = Convert.ToByte(str, 2);
+                info += Encoding.Default.GetString(bt);
             }
-            if (delta > 0)
-            {
-                return 1;
-            }
-            return 0;
+
+            return info;
         }
 
         private string MessageToBitArray(string msg)
@@ -221,35 +205,12 @@ namespace StegoModel
                 var str = Convert.ToString(msg[i], 2);
                 while (str.Length < 8)
                 {
-                    string str1 = "0" + str;
+                    var str1 = "0" + str;
                     str = str1;
                 }
                 result += str;
             }
 
-            return result;
-        }
-
-        private int ChangeBlueValue(int bxy, double yxy, char bit)
-        {
-            int result;
-            if (bit == '1')
-            {
-                result = (int)(bxy + _lambda * yxy);
-                if (result > 255)
-                {
-                    result = 255;
-                }
-            }
-            else
-            {
-                //m =0
-                result = (int)(bxy - _lambda * yxy);
-                if (result < 0)
-                {
-                    result = 0;
-                }
-            }
             return result;
         }
 

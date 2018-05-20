@@ -156,9 +156,9 @@ namespace StegoModel
             var w = image.Width;
             var h = image.Height;
             Color pixel;
-            for (int i = 2; i < w; i++)
+            for (int i = 0; i < w; i++)
             {
-                for (int j = 2; j < h; j++)
+                for (int j = 0; j < h; j++)
                 {
                     pixel = image.GetPixel(i, j);
                     var c = Color.FromArgb(pixel.R, pixel.G, blue[i, j]);
@@ -167,17 +167,17 @@ namespace StegoModel
             }
         }
 
-        public int[,] getR()
+        public int[,] GetR()
         {
             return _redChannel;
         }
 
-        public int[,] getG()
+        public int[,] GetG()
         {
             return _greenChannel;
         }
 
-        public int[,] getB()
+        public int[,] GetB()
         {
             return _blueChannel;
         }
