@@ -122,4 +122,99 @@ namespace StegoModel
             }
         }
     }
+
+
+    /// <summary>
+    /// Помогает работать с RGB каналами изображения.
+    /// </summary>
+    public class ExtractorRGB
+    {
+        /// <summary>
+        /// Красный канал изображения.
+        /// </summary>
+        private int[,] _redChannel;
+
+        /// <summary>
+        /// Зеленый канал изображения.
+        /// </summary>
+        private int[,] _greenChannel;
+
+        /// <summary>
+        /// Синий канал изображения.
+        /// </summary>
+        private int[,] _blueChannel;
+
+        /// <summary>
+        /// Извлечения RGB-каналов из изображения.
+        /// </summary>
+        /// <param name="image">Исходное изображение.</param>
+        public void ExtractRGB(Bitmap image)
+        {
+            var w = image.Width;
+            var h = image.Height;
+            _redChannel = new int[w, h];
+            _greenChannel = new int[w, h];
+            _blueChannel = new int[w, h];
+            Color pixel;
+
+            for (int i = 0; i < w; i++)
+            {
+                for (int j = 0; j < h; j++)
+                {
+                    pixel = image.GetPixel(i, j);
+                    _redChannel[i, j] = pixel.R;
+                    _greenChannel[i, j] = pixel.G;
+                    _blueChannel[i, j] = pixel.B;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Заменить синий канал(в RGB модели) изображения.
+        /// </summary>
+        /// <param name="image">Исходное изображение.</param>
+        /// <param name="blue">Новый синий канал изображения.</param>
+        public void ChangeBlueChannel(Bitmap image, int[,] blue)
+        {
+            var w = image.Width;
+            var h = image.Height;
+            Color pixel;
+            for (int i = 0; i < w; i++)
+            {
+                for (int j = 0; j < h; j++)
+                {
+                    pixel = image.GetPixel(i, j);
+                    var c = Color.FromArgb(pixel.R, pixel.G, blue[i, j]);
+                    image.SetPixel(i, j, c);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Красный канал изображения.
+        /// </summary>
+        /// <returns></returns>
+        public int[,] R
+        {
+            get { return _redChannel; }
+        }
+
+        /// <summary>
+        /// Зеленый канал изображения.
+        /// </summary>
+        /// <returns></returns>
+        public int[,] G
+        {
+            get { return _greenChannel; }
+        }
+
+        /// <summary>
+        /// Синий канал изображения.
+        /// </summary>
+        /// <returns></returns>
+        public int[,] B
+        {
+            get { return _blueChannel; }
+        }
+    }
 }

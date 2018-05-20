@@ -32,15 +32,6 @@ namespace StegoModel
         /// <returns>Возвращает извлеченный скрытый текст 
         ///     из стегоконтейнера.</returns>
         List<byte> Unpack(Bitmap stegoImage);
-
-        /// <summary>
-        /// Проверяет является ли контейнер стегоконтейнером.
-        /// </summary>
-        /// <param name="sourceImage">Проверяемый стегоконтейнер.</param>
-        /// <returns>Возвращает результат проверки,
-        ///     true - является стегоконтейнером,
-        ///     false - пустой контейнер.</returns>
-        bool IsCombined(Bitmap sourceImage);
     }
 
     /// <summary>
