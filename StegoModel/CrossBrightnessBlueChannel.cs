@@ -74,7 +74,6 @@ namespace StegoModel
 
         private List<Point> HideMessage(string text, Bitmap image)
         {
-
             var width = image.Width;
             var height = image.Height;
             //проверяем, поместиться ли исходный текст
@@ -94,9 +93,9 @@ namespace StegoModel
 
             var y = CalculateBrightness(r, g, b, width, height);
             //инициализация нового массива синего канала
-            for (int i = 0; i < width; ++i)
+            for (int i = 0; i < width; i++)
             {
-                for (int j = 0; j < height; ++j)
+                for (int j = 0; j < height; j++)
                 {
                     bStar[i, j] = b[i, j];
                 }
@@ -258,9 +257,9 @@ namespace StegoModel
             int[,] g, int[,] b, int width, int height)
         {
             var y = new double[width, height];
-            for (int i = 0; i < width; ++i)
+            for (int i = 0; i < width; i++)
             {
-                for (int j = 0; j < height; ++j)
+                for (int j = 0; j < height; j++)
                 {
                     y[i, j] = (int)(0.298 * r[i, j]
                         + 0.586 * g[i, j] + 0.114 * b[i, j]);
