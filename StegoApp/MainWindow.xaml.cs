@@ -11,8 +11,7 @@ namespace StegoApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        private PackerViewModel _packer;
-        private UnpackerViewModel _unpacker;
+        private StegoSystemViewModel _stegoSystem;
         private VisualAttackViewModel _visualAttack;
         private BlurViewModel _blurFilter;
 
@@ -23,24 +22,24 @@ namespace StegoApp
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _packer = this.TryFindResource("Packer")
-                as PackerViewModel;
-            _unpacker = this.TryFindResource("Unpacker")
-                as UnpackerViewModel;
+            _stegoSystem = this.TryFindResource("StegoSystem")
+                as StegoSystemViewModel;
+
             _visualAttack = this.TryFindResource("VisualAttack")
                 as VisualAttackViewModel;
+
             _blurFilter = this.TryFindResource("Blur")
                 as BlurViewModel;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            _packer.PathSourceImage = OpenImage();
+            _stegoSystem.SelectedPacker.PathSourceImage = OpenImage();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            _packer.PathHidingText = OpenTextFile();
+            _stegoSystem.SelectedPacker.PathHidingText = OpenTextFile();
         }
 
         private string OpenTextFile()
@@ -63,7 +62,7 @@ namespace StegoApp
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            _packer.PathStegoContainer = OpenImage();
+            _stegoSystem.SelectedPacker.PathStegoContainer = SaveImage();
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
@@ -73,7 +72,7 @@ namespace StegoApp
 
             try
             {
-                _packer.Pack();
+                _stegoSystem.SelectedPacker.Pack();
             }
             catch (Exception ex)
             {
@@ -87,12 +86,12 @@ namespace StegoApp
 
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
-            _unpacker.PathStegoContainer = OpenImage();
+            _stegoSystem.SelectedUnpacker.PathStegoContainer = OpenImage();
         }
 
         private void Button_Click_5(object sender, RoutedEventArgs e)
         {
-            _unpacker.PathUnhidingText = SaveTextFile();
+            _stegoSystem.SelectedUnpacker.PathUnhidingText = SaveTextFile();
         }
 
         private string SaveTextFile()
@@ -120,7 +119,7 @@ namespace StegoApp
 
             try
             {
-                _unpacker.Unpack();
+                _stegoSystem.SelectedUnpacker.Unpack();
             }
             catch (Exception ex)
             {

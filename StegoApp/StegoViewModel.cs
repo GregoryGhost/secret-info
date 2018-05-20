@@ -1,4 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using StegoModel;
 
@@ -21,6 +25,156 @@ namespace StegoApp
         }
     }
 
+
+    /// <summary>
+    /// Представление модели стеганографической системы.
+    /// </summary>
+    public class StegoSystemViewModel : Notify
+    {
+        /// <summary>
+        /// Текущая пара стеганографический упаковщик и распаковщик.
+        /// </summary>
+        private Tuple<PackerViewModel, UnpackerViewModel> _currentStegoAlgo;
+
+        /// <summary>
+        /// Стеганографические алгоритмы распаковки и упаковки.
+        /// </summary>
+        private StegoAlgorithms _stegoAlgo;
+
+        /// <summary>
+        /// Инициализация представлений моделей стаканов.
+        /// </summary>
+        public StegoSystemViewModel()
+        {
+            _stegoAlgo = new StegoAlgorithms();
+            _currentStegoAlgo = _stegoAlgo[0];
+        }
+
+        /// <summary>
+        /// Названия доступных стеганографических алгоритмов.
+        /// </summary>
+        public List<string> Names
+        {
+            get
+            {
+                //У упаковщика и распаковщика одно и тоже название
+                //  стеганографического алгоритма в паре,
+                //  берём любой из них
+                return _stegoAlgo.ToList()
+                               .Select(a => a.Item1.Name)
+                               .ToList();
+            }
+        }
+
+        /// <summary>
+        /// Получить название выбранного 
+        ///     стеганографического упаковщика.
+        /// </summary>
+        public string SelectedPackerName
+        {
+            get
+            {
+                return _currentStegoAlgo.Item1.Name;
+            }
+            set
+            {
+                SelectedStegoAlgo = _stegoAlgo.ToList()
+                    .First(g => g.Item1.Name == value);
+                OnPropertyChanged(nameof(SelectedPackerName));
+            }
+        }
+
+        /// <summary>
+        /// Получить название выбранного 
+        ///     стеганографического распаковщика.
+        /// </summary>
+        public string SelectedUnpackerName
+        {
+            get
+            {
+                return _currentStegoAlgo.Item2.Name;
+            }
+            set
+            {
+                SelectedStegoAlgo = _stegoAlgo.ToList()
+                    .First(g => g.Item2.Name == value);
+                OnPropertyChanged(nameof(SelectedUnpackerName));
+            }
+        }
+
+        /// <summary>
+        /// Выбранный стеганографический алгоритм распаковки и упаковки.
+        /// </summary>
+        public Tuple<PackerViewModel, UnpackerViewModel> SelectedStegoAlgo
+        {
+            get
+            {
+                return _currentStegoAlgo;
+            }
+            set
+            {
+                _currentStegoAlgo = value;
+                OnPropertyChanged(nameof(SelectedPacker));
+                OnPropertyChanged(nameof(SelectedUnpacker));
+            }
+        }
+
+        /// <summary>
+        /// Выбранный стеганографический алгоритм упаковки.
+        /// </summary>
+        public PackerViewModel SelectedPacker
+        {
+            get
+            {
+                return _currentStegoAlgo.Item1;
+            }
+        }
+
+        /// <summary>
+        /// Выбранный стеганографический алгоритм распаковки.
+        /// </summary>
+        public UnpackerViewModel SelectedUnpacker
+        {
+            get
+            {
+                return _currentStegoAlgo.Item2;
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// Коллекция пар упаковщиков и распаковщиков.
+    /// </summary>
+    public class StegoAlgorithms :
+        ObservableCollection<
+            Tuple<PackerViewModel, UnpackerViewModel>>
+    {
+        /// <summary>
+        /// Инициализация представлений стегонографических алгоритмов.
+        /// </summary>
+        public StegoAlgorithms()
+        {
+            var algoLSB = new LeastSignificantBit();
+            var algoKDB = new CrossBrightnessBlueChannel();
+
+            var lsb = "Наименьшего значащего бита";
+            var kdb = "Алгоритм Куттера-Джордана-Боссена";
+
+            var vmpLSB = new PackerViewModel(algoLSB, lsb);
+            var vmuLSB = new UnpackerViewModel(algoLSB, lsb);
+
+            var vmpKDB = new PackerViewModel(algoKDB, kdb);
+            var vmuKDB = new UnpackerViewModel(algoKDB, kdb);
+
+            Add(new Tuple<PackerViewModel, UnpackerViewModel>(
+                vmpLSB, vmuLSB));
+            Add(new Tuple<PackerViewModel, UnpackerViewModel>(
+                vmpKDB, vmuKDB));
+        }
+    }
+
+
     /// <summary>
     /// Представление модели стеганографического упаковщика.
     /// </summary>
@@ -29,7 +183,7 @@ namespace StegoApp
         /// <summary>
         /// Стеганографический упаковщик.
         /// </summary>
-        private readonly IPacker _workerSLB;
+        private readonly IPacker _packer;
 
         /// <summary>
         /// Помощник по работе с вводом-выводом.
@@ -45,7 +199,7 @@ namespace StegoApp
         /// Расположение скрываемого текста.
         /// </summary>
         private string _pathHidingText = string.Empty;
-        
+
         /// <summary>
         /// Путь до стегоконтейнера.
         /// </summary>
@@ -54,10 +208,14 @@ namespace StegoApp
         /// <summary>
         /// Инициализация необходимых объектов для работы.
         /// </summary>
-        public PackerViewModel()
+        /// <param name="name">Название стеганографического 
+        ///     алгоритма упаковки.</param>
+        /// <param name="packer">Стеганографический упаковщик.</param>
+        public PackerViewModel(IPacker packer, string name)
         {
-            _workerSLB = new LeastSignificantBit();
+            _packer = packer;
             _helperIO = new HelperIO();
+            Name = name;
         }
 
         /// <summary>
@@ -108,6 +266,12 @@ namespace StegoApp
             }
         }
 
+
+        /// <summary>
+        /// Название стеганографического алгоритма упаковки.
+        /// </summary>
+        public string Name { get; private set; }
+
         /// <summary>
         /// Упаковать скрываемый текст в стегоконтейнер.
         /// </summary>
@@ -118,7 +282,7 @@ namespace StegoApp
             var hidingText = _helperIO.ReadText(
                 PathHidingText);
 
-            var stegocontainer = _workerSLB.Pack(
+            var stegocontainer = _packer.Pack(
                 srcImage, hidingText);
             _helperIO.WriteImage(PathStegoContainer,
                 stegocontainer);
@@ -144,7 +308,7 @@ namespace StegoApp
         /// <summary>
         /// Стеганографический распаковщик.
         /// </summary>
-        private readonly IUnpacker _workerSLB;
+        private readonly IUnpacker _unpacker;
 
         /// <summary>
         /// Помощник по работе с вводом-выводом.
@@ -152,12 +316,18 @@ namespace StegoApp
         private readonly HelperIO _helperIO;
 
         /// <summary>
+        /// Название стеганографического алгоритма распаковки.
+        /// </summary>
+        public string Name { get; private set; }
+
+        /// <summary>
         /// Инициализация необходимых объектов.
         /// </summary>
-        public UnpackerViewModel()
+        public UnpackerViewModel(IUnpacker unpacker, string name)
         {
-            _workerSLB = new LeastSignificantBit();
+            _unpacker = unpacker;
             _helperIO = new HelperIO();
+            Name = name;
         }
 
         /// <summary>
@@ -167,7 +337,7 @@ namespace StegoApp
         {
             var stegocontainer = _helperIO.ReadImage(
                 PathStegoContainer);
-            var unhidingText = _workerSLB.Unpack(
+            var unhidingText = _unpacker.Unpack(
                 stegocontainer);
 
             _helperIO.WriteText(PathUnhidingText,

@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Blur.cs" />
+    <Compile Include="CrossBrightnessBlueChannel.cs" />
     <Compile Include="FastBitmap.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="LeastSignificantBit.cs" />
